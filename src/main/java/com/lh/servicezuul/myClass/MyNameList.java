@@ -44,7 +44,7 @@ public abstract class MyNameList {
      * @param ip 客户端IP
      * @return 客户端IP是否存在于名单中
      */
-    protected boolean isCheckName(String ip) {
+    protected boolean isAllow(String ip) {
         if (this.nameList.isEmpty())
             return false;
         else {

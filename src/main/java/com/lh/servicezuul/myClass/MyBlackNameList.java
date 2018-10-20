@@ -11,7 +11,8 @@ public final class MyBlackNameList extends MyNameList {
         super(false);
     }
 
-    public boolean isAllow(String ip){
-        return !super.isCheckName(ip);
+    @Override
+    public boolean isAllow(String ip) {
+        return !super.isAllow(ip);
     }
 }

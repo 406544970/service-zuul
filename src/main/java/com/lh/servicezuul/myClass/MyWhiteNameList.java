@@ -13,8 +13,9 @@ public final class MyWhiteNameList extends MyNameList {
         super(true);
     }
 
-    public boolean isAllow(String ip){
-        return super.isCheckName(ip);
+    @Override
+    public boolean isAllow(String ip) {
+        return super.isAllow(ip);
     }
 
 }
