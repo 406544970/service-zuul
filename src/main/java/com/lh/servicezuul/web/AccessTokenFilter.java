@@ -8,7 +8,7 @@ import com.netflix.zuul.context.RequestContext;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * @author lianghao
+ * @author 梁昊
  * @date 2018/10/20
  * @function 身份认证过滤器
  * @editLog 过滤IP黑名单和白名单，判断是BS还是CS，判断是否需要身份验证

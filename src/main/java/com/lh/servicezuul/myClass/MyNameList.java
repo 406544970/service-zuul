@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author lianghao
+ * @author 梁昊
  * @date 2018/10/20
  * @function 名单抽象类
  * @editLog

@@ -3,7 +3,7 @@ package com.lh.servicezuul.myClass;
 
 
 /**
- * @author lianghao
+ * @author 梁昊
  * @date 2018/10/20
  * @function 以客户端IP为白名单，过滤请求
  * @editLog
