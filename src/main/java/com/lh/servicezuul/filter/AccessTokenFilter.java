@@ -1,4 +1,4 @@
-package com.lh.servicezuul.web;
+package com.lh.servicezuul.filter;
 
 import com.lh.servicezuul.myClass.MyBlackNameList;
 import com.lh.servicezuul.myClass.MyWhiteNameList;

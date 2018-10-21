@@ -1,4 +1,4 @@
-package com.lh.servicezuul.web;
+package com.lh.servicezuul.apicontrol;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
