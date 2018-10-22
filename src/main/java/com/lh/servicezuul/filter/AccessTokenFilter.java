@@ -74,19 +74,19 @@ public class AccessTokenFilter extends ZuulFilter {
                 OperateTypeClass operateTypeClass = new OperateTypeClass();
                 OperateClass.CheckIdentityEnum checkIdentityEnum = operateTypeClass.GetOperateType(useIp);
                 switch (checkIdentityEnum) {
-                    case IS_BS:
-                        break;
                     case IS_CS:
-                        break;
-                    case IS_IOS:
                         break;
                     case IS_ANDROID:
                         break;
-                    case IS_LOCALREMOTE:
+                    case IS_IOS:
+                        break;
+                    case IS_BS:
                         break;
                     case IS_WEIXIN_PUBLIC:
                         break;
                     case IS_WEIXIN_SMALLPROGRAME:
+                        break;
+                    case IS_LOCALREMOTE:
                         break;
                     default:
                         break;
