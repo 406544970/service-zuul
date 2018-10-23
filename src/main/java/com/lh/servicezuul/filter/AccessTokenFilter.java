@@ -1,14 +1,12 @@
 package com.lh.servicezuul.filter;
 
 import com.lh.servicezuul.model.ReturnModel;
-import com.lh.servicezuul.myClass.IsCheckWhitePath;
-import com.lh.servicezuul.myClass.MyBlackNameList;
-import com.lh.servicezuul.myClass.MyWhiteNameList;
-import com.lh.servicezuul.myClass.OperateTypeClass;
+import com.lh.servicezuul.myClass.*;
 import com.lh.servicezuul.myenum.OperateClass;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -22,13 +20,11 @@ public class AccessTokenFilter extends ZuulFilter {
         super();
         iniFilter();
     }
-
+    private final String TokenName = "AccessToken";
     private MyWhiteNameList myWhiteNameList;
-    private MyBlackNameList myBlackNameList;
 
     private void iniFilter() {
         myWhiteNameList = new MyWhiteNameList();
-        myBlackNameList = new MyBlackNameList();
     }
 
     @Override
@@ -43,7 +39,7 @@ public class AccessTokenFilter extends ZuulFilter {
 
     @Override
     public int filterOrder() {
-        return 0;
+        return 1;
     }
 
     @Override
@@ -52,48 +48,53 @@ public class AccessTokenFilter extends ZuulFilter {
         int nStatusCode = 401;
         String myBody = null;
         ReturnModel returnModel = new ReturnModel();
-
         RequestContext ctx = RequestContext.getCurrentContext();
         HttpServletRequest request = ctx.getRequest();
-
         String useIp = request.getRemoteAddr();
-        if (myBlackNameList.isAllow(useIp)) {
-            isCheck = true;
-            returnModel.isok = true;
-            String useContextPath = request.getContextPath();
-            IsCheckWhitePath isCheckWhitePath = new IsCheckWhitePath();
-            if (isCheckWhitePath.isCheckWhite(useContextPath)) {
-                isCheck = myWhiteNameList.isAllow(useIp);
-                if (!isCheck) {
-                    returnModel.isok = false;
-                    returnModel.message = String.format("%s:您的IP未在白名单中，不允许访问！", returnModel.message);
-                }
-            }
+        returnModel.isok = true;
+        String useContextPath = request.getContextPath();
+        IsCheckWhitePath isCheckWhitePath = new IsCheckWhitePath();
 
-            if (isCheck) {
-                OperateTypeClass operateTypeClass = new OperateTypeClass();
-                OperateClass.CheckIdentityEnum checkIdentityEnum = operateTypeClass.GetOperateType(useIp);
-                switch (checkIdentityEnum) {
-                    case IS_CS:
-                        break;
-                    case IS_ANDROID:
-                        break;
-                    case IS_IOS:
-                        break;
-                    case IS_BS:
-                        break;
-                    case IS_WEIXIN_PUBLIC:
-                        break;
-                    case IS_WEIXIN_SMALLPROGRAME:
-                        break;
-                    case IS_LOCALREMOTE:
-                        break;
-                    default:
-                        break;
-                }
+        if (isCheckWhitePath.isCheckWhite(useContextPath)) {
+            isCheck = myWhiteNameList.isAllow(useIp);
+            if (!isCheck) {
+                returnModel.isok = false;
+                returnModel.message = String.format("%s:您的IP未在白名单中，不允许访问！", returnModel.message);
+            } else {
+                isCheck = true;
             }
         } else {
-            returnModel.message = String.format("%s:您的IP已进入黑名单，不允许访问！", returnModel.message);
+            isCheck = true;
+        }
+
+        if (isCheck) {
+            OperateTypeClass operateTypeClass = new OperateTypeClass();
+            OperateClass.CheckIdentityEnum checkIdentityEnum = operateTypeClass.GetOperateType(useIp);
+
+            switch (checkIdentityEnum) {
+                case IS_CS:
+                case IS_ANDROID:
+                case IS_IOS:
+                    Object accessToken = request.getParameter(TokenName);
+                    CheckAccessTokenClass checkAccessTokenClass = new CheckAccessTokenClass();
+                    returnModel.isok = checkAccessTokenClass.isAccessTokenOk(accessToken);
+                    //检查accessToken
+                    break;
+                case IS_BS:
+                    //检查cookie
+                    Cookie[] cookies = request.getCookies();
+                    CheckCookieClass checkCookieClass = new CheckCookieClass();
+                    returnModel.isok = checkCookieClass.isCookieOk(cookies);
+                    break;
+                case IS_WEIXIN_PUBLIC:
+                    break;
+                case IS_WEIXIN_SMALLPROGRAME:
+                    break;
+                case IS_LOCALREMOTE:
+                    break;
+                default:
+                    break;
+            }
         }
 
 
