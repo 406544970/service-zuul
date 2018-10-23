@@ -60,8 +60,6 @@ public class AccessTokenFilter extends ZuulFilter {
             if (!isCheck) {
                 returnModel.isok = false;
                 returnModel.message = String.format("%s:您的IP未在白名单中，不允许访问！", returnModel.message);
-            } else {
-                isCheck = true;
             }
         } else {
             isCheck = true;

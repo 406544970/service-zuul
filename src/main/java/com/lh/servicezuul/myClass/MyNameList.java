@@ -15,6 +15,13 @@ public abstract class MyNameList {
         this.iniClass(isWhite);
     }
 
+    @Override
+    protected void finalize() throws Throwable {
+        super.finalize();
+        nameList.clear();
+        nameList = null;
+    }
+
     private List<String> nameList;
     private boolean isWhite;
 

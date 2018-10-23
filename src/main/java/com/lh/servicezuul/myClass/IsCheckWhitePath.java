@@ -22,6 +22,13 @@ public class IsCheckWhitePath {
         list.add("-wip-");
     }
 
+    @Override
+    protected void finalize() throws Throwable {
+        super.finalize();
+        list.clear();
+        list = null;
+    }
+
     /**
      *
      * */
