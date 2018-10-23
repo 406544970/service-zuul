@@ -1,13 +1,15 @@
 package com.lh.servicezuul.filter;
 
+import com.google.gson.Gson;
 import com.lh.servicezuul.model.ReturnModel;
 import com.lh.servicezuul.myClass.*;
-import com.lh.servicezuul.myenum.OperateClass;
+import com.lh.servicezuul.myenum.EnumClass;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import java.util.logging.Logger;
 
 /**
  * @author 梁昊
@@ -22,9 +24,10 @@ public class AccessTokenFilter extends ZuulFilter {
     }
     private final String TokenName = "AccessToken";
     private MyWhiteNameList myWhiteNameList;
+    private MyBlackNameList myBlackNameList;
 
     private void iniFilter() {
-        myWhiteNameList = new MyWhiteNameList();
+        myBlackNameList = new MyBlackNameList();
     }
 
     @Override
@@ -39,69 +42,86 @@ public class AccessTokenFilter extends ZuulFilter {
 
     @Override
     public int filterOrder() {
-        return 1;
+        return 0;
     }
 
     @Override
     public Object run() {
         boolean isCheck;
         int nStatusCode = 401;
-        String myBody = null;
+//        String myBody = null;
         ReturnModel returnModel = new ReturnModel();
         RequestContext ctx = RequestContext.getCurrentContext();
         HttpServletRequest request = ctx.getRequest();
         String useIp = request.getRemoteAddr();
-        returnModel.isok = true;
-        String useContextPath = request.getContextPath();
-        IsCheckWhitePath isCheckWhitePath = new IsCheckWhitePath();
+        Logger logger = Logger.getLogger("chapter07");
+        logger.info("useIP:" + useIp);
 
-        if (isCheckWhitePath.isCheckWhite(useContextPath)) {
-            isCheck = myWhiteNameList.isAllow(useIp);
-            if (!isCheck) {
-                returnModel.isok = false;
-                returnModel.message = String.format("%s:您的IP未在白名单中，不允许访问！", returnModel.message);
+        if (myBlackNameList.isAllow(useIp)) {
+            returnModel.isok = true;
+            myWhiteNameList = new MyWhiteNameList();
+            String getRequestURI = request.getRequestURI();
+            logger.info("useContextPath:" + getRequestURI);
+            IsCheckWhitePath isCheckWhitePath = new IsCheckWhitePath();
+
+            if (isCheckWhitePath.isCheckWhite(getRequestURI)) {
+                isCheck = myWhiteNameList.isAllow(useIp);
+                if (!isCheck) {
+                    returnModel.isok = false;
+                    returnModel.message = String.format("%s:您的IP(%s)未在白名单中，不允许访问！", returnModel.message,useIp);
+                }
+            } else {
+                isCheck = true;
+            }
+
+            if (isCheck) {
+                OperateTypeClass operateTypeClass = new OperateTypeClass();
+                EnumClass.CheckIdentityEnum checkIdentityEnum = operateTypeClass.GetOperateType(getRequestURI);
+                switch (checkIdentityEnum) {
+                    case IS_CS:
+                    case IS_ANDROID:
+                    case IS_IOS:
+                        Object accessToken = request.getParameter(TokenName);
+                        CheckAccessTokenClass checkAccessTokenClass = new CheckAccessTokenClass();
+                        returnModel.isok = checkAccessTokenClass.isAccessTokenOk(accessToken);
+                        if (!returnModel.isok) {
+                            returnModel.message = String.format("%s:无合法通行证，不允许访问！", returnModel.message);
+                        }
+                        //检查accessToken
+                        break;
+                    case IS_BS:
+                        //检查cookie
+                        Cookie[] cookies = request.getCookies();
+                        CheckCookieClass checkCookieClass = new CheckCookieClass();
+                        returnModel.isok = checkCookieClass.isCookieOk(cookies);
+                        if (!returnModel.isok) {
+                            returnModel.message = String.format("%s:无合法Cookie，不允许访问！", returnModel.message);
+                        }
+                        break;
+                    case IS_WEIXIN_PUBLIC:
+                        break;
+                    case IS_WEIXIN_SMALLPROGRAME:
+                        break;
+                    case IS_LOCALREMOTE:
+                        break;
+                    case IS_NO:
+                        returnModel.isok = true;
+                        break;
+                    default:
+                        break;
+                }
             }
         } else {
-            isCheck = true;
-        }
-
-        if (isCheck) {
-            OperateTypeClass operateTypeClass = new OperateTypeClass();
-            OperateClass.CheckIdentityEnum checkIdentityEnum = operateTypeClass.GetOperateType(useIp);
-
-            switch (checkIdentityEnum) {
-                case IS_CS:
-                case IS_ANDROID:
-                case IS_IOS:
-                    Object accessToken = request.getParameter(TokenName);
-                    CheckAccessTokenClass checkAccessTokenClass = new CheckAccessTokenClass();
-                    returnModel.isok = checkAccessTokenClass.isAccessTokenOk(accessToken);
-                    //检查accessToken
-                    break;
-                case IS_BS:
-                    //检查cookie
-                    Cookie[] cookies = request.getCookies();
-                    CheckCookieClass checkCookieClass = new CheckCookieClass();
-                    returnModel.isok = checkCookieClass.isCookieOk(cookies);
-                    break;
-                case IS_WEIXIN_PUBLIC:
-                    break;
-                case IS_WEIXIN_SMALLPROGRAME:
-                    break;
-                case IS_LOCALREMOTE:
-                    break;
-                default:
-                    break;
-            }
+            returnModel.message = String.format("%s:您的IP(%s)已进入黑名单，不允许访问！", returnModel.message,useIp);
         }
 
 
         if (!returnModel.isok) {
-            ctx.setSendZuulResponse(returnModel.isok);
+            ctx.setSendZuulResponse(false);
             ctx.setResponseStatusCode(nStatusCode);
-            if (myBody != null) {
-                ctx.setResponseBody(myBody);
-            }
+            ctx.getResponse().setContentType("text/html;charset=UTF-8");
+            Gson gson = new Gson();
+            ctx.setResponseBody(gson.toJson(returnModel));
         }
         return null;
     }

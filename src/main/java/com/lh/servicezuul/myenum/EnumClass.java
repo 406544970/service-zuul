@@ -6,7 +6,7 @@ package com.lh.servicezuul.myenum;
  * @function
  * @editLog
  */
-public class OperateClass {
+public class EnumClass {
     public enum CheckIdentityEnum {
         /**
          * BS客户端*/
@@ -16,7 +16,8 @@ public class OperateClass {
         IS_IOS("-ikf-"),//IOS
         IS_WEIXIN_PUBLIC("-wkf-"),//微信公众号
         IS_WEIXIN_SMALLPROGRAME("-skf-"),//微信小程序
-        IS_LOCALREMOTE("-lkf-");//本地跳转
+        IS_LOCALREMOTE("-lkf-"),//本地跳转
+        IS_NO("-nkf-");//不验证
 
         private String text;
 

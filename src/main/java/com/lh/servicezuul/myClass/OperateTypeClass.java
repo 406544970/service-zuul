@@ -1,6 +1,6 @@
 package com.lh.servicezuul.myClass;
 
-import com.lh.servicezuul.myenum.OperateClass;
+import com.lh.servicezuul.myenum.EnumClass;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,26 +19,52 @@ public class OperateTypeClass {
         IniClass();
     }
 
-    private void IniClass(){
+    private void IniClass() {
         list = new ArrayList<>();
-        for (OperateClass.CheckIdentityEnum row:OperateClass.CheckIdentityEnum.values()
-             ) {
-            list.add(row.toString());
+        for (EnumClass.CheckIdentityEnum row : EnumClass.CheckIdentityEnum.values()
+                ) {
+            if (!row.toString().equals("-nkf-")) {
+                list.add(row.toString());
+            }
         }
     }
 
-    public OperateClass.CheckIdentityEnum GetOperateType(String _myPath){
+    public EnumClass.CheckIdentityEnum GetOperateType(String _myPath) {
         int index = -1;
+        EnumClass.CheckIdentityEnum checkIdentityEnum;
         for (int i = 0; i < list.size(); i++) {
-            if (_myPath.indexOf(list.get(i)) > -1){
+            if (_myPath.indexOf(list.get(i)) > -1) {
                 index = i;
             }
         }
-        if (index > -1){
-            return null;
-        }else{
-            return OperateClass.CheckIdentityEnum.valueOf(list.get(index));
+        switch (index) {
+            case 0:
+                checkIdentityEnum = EnumClass.CheckIdentityEnum.IS_BS;
+                break;
+            case 1:
+                checkIdentityEnum = EnumClass.CheckIdentityEnum.IS_CS;
+                break;
+            case 2:
+                checkIdentityEnum = EnumClass.CheckIdentityEnum.IS_ANDROID;
+                break;
+            case 3:
+                checkIdentityEnum = EnumClass.CheckIdentityEnum.IS_IOS;
+                break;
+            case 4:
+                checkIdentityEnum = EnumClass.CheckIdentityEnum.IS_WEIXIN_PUBLIC;
+                break;
+            case 5:
+                checkIdentityEnum = EnumClass.CheckIdentityEnum.IS_WEIXIN_SMALLPROGRAME;
+                break;
+            case 6:
+                checkIdentityEnum = EnumClass.CheckIdentityEnum.IS_LOCALREMOTE;
+                break;
+            default:
+                checkIdentityEnum = EnumClass.CheckIdentityEnum.IS_NO;
+                break;
         }
+
+        return checkIdentityEnum;
     }
 
     @Override

@@ -39,7 +39,7 @@ public abstract class MyNameList {
             list.add("192.168.2.158");
             list.add("192.168.2.159");
         } else {
-            list.add("192.168.1.156");
+            list.add("192.168.1.103");
             list.add("192.168.1.157");
             list.add("192.168.1.158");
             list.add("192.168.1.159");
