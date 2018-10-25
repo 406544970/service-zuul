@@ -49,7 +49,6 @@ public class AccessTokenFilter extends ZuulFilter {
     public Object run() {
         boolean isCheck;
         int nStatusCode = 401;
-//        String myBody = null;
         ReturnModel returnModel = new ReturnModel();
         RequestContext ctx = RequestContext.getCurrentContext();
         HttpServletRequest request = ctx.getRequest();
