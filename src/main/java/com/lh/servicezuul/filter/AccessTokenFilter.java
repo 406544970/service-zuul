@@ -2,7 +2,7 @@ package com.lh.servicezuul.filter;
 
 import com.google.gson.Gson;
 import com.lh.servicezuul.model.ReturnModel;
-import com.lh.servicezuul.myClass.*;
+import com.lh.servicezuul.myclass.*;
 import com.lh.servicezuul.myenum.EnumClass;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;

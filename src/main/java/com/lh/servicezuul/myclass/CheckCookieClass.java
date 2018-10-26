@@ -1,4 +1,4 @@
-package com.lh.servicezuul.myClass;
+package com.lh.servicezuul.myclass;
 
 import javax.servlet.http.Cookie;
 
