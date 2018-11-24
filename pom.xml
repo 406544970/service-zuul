@@ -79,7 +79,7 @@
 			</plugin>
 			<plugin>
 
-				<groupId>org.springframew.ork.boot</groupId>
+				<groupId>org.springframe.work.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
