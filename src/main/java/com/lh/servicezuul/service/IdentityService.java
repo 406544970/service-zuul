@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Repository
-@FeignClient(value = "identity-mucon")
+@FeignClient(value = "identity-mucon", path = "identity-mucon")
 public interface IdentityService {
 
     /**
