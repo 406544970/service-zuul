@@ -18,4 +18,7 @@ public class ReturnModel {
     public String message;
     public int count;
     public String data;
+    public void setSuccess(){
+        this.message = "存在合法身份";
+    }
 }
