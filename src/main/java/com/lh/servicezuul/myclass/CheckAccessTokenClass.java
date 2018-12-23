@@ -30,13 +30,13 @@ public class CheckAccessTokenClass {
                 case "Manager":
                     resultVO = identityService.checkManagerIdentity(useId, accessToken);
                     break;
-                case "pctourist":
+                case "PcTourist":
                     resultVO = identityService.checkPcTouristsIdentity(useId, accessToken);
                     break;
-                case "apptourist":
+                case "AppTourist":
                     resultVO = identityService.checkAppTouristsIdentity(useId, accessToken);
                     break;
-                case "weixintourist":
+                case "WeixinTourist":
                     resultVO = identityService.checkWeiXinTouristsIdentity(useId, accessToken);
                     break;
                 default:
