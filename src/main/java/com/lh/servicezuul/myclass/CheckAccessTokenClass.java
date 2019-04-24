@@ -2,7 +2,6 @@ package com.lh.servicezuul.myclass;
 
 import com.lh.servicezuul.model.TokenClass;
 import com.lh.servicezuul.service.IdentityService;
-import com.lishunyi.result.VO.ResultVO;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
