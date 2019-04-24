@@ -1,7 +1,7 @@
 package com.lh.servicezuul.service;
 
 
-import com.lishunyi.result.VO.ResultVO;
+import com.lh.servicezuul.model.ResultVO;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,7 +27,7 @@ public interface IdentityService {
      */
     @GetMapping(value = "/checkManagerIdentity")
     ResultVO checkManagerIdentity(@RequestParam(value = "keyName", defaultValue = "")String keyName,
-                                         @RequestParam(value = "value", defaultValue = "")String value);
+                                  @RequestParam(value = "value", defaultValue = "")String value);
 
     /**
      * 读取APP端游客redis信息
