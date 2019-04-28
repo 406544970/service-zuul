@@ -67,7 +67,7 @@ public class AccessTokenFilter extends ZuulFilter {
         RequestContext ctx = RequestContext.getCurrentContext();
         HttpServletRequest request = ctx.getRequest();
         HttpServletResponse response = ctx.getResponse();
-        String[] whiteList = {"http://192.168.2.24:8000", "http://www.test.com", "http://getway.test.com"};
+        String[] whiteList = {"http://192.168.10.71:2000", "http://192.168.10.71"};
         String myOrigin = request.getHeader("origin");
         logger.info("Head[myOrigin]:" + myOrigin);
         boolean isValid = false;
@@ -140,37 +140,37 @@ public class AccessTokenFilter extends ZuulFilter {
                         //检查cookie
                         Cookie[] cookies = request.getCookies();
                         returnModel.isok = cookies == null ? false : true;
-                        if (returnModel.isok) {
-                            returnModel.setSuccess();
-                        }
-//                        String useId = null;
-//                        String accessToken = null;
-//                        String useType = null;
-//                        if (cookies != null) {
-//                            for (Cookie row : cookies
-//                            ) {
-//                                if (row.getName().equals(TokenName)) {
-//                                    accessToken = row.getValue();
-//                                }
-//                                if (row.getName().equals(UseId)) {
-//                                    useId = row.getValue();
-//                                }
-//                                if (row.getName().equals(UseType)) {
-//                                    useType = row.getValue();
-//                                }
-//                            }
-//                            if ((accessToken != null) && (useId != null) && (useType != null)) {
-//                                TokenClass tokenClass = new TokenClass();
-//                                tokenClass.setUseId(useId);
-//                                tokenClass.setAccessToken(accessToken);
-//                                tokenClass.setUseType(useType);
-//                                CheckAccessTokenClass checkAccessTokenClass = new CheckAccessTokenClass();
-//                                returnModel.isok = checkAccessTokenClass.isAccessTokenOk(tokenClass);
-//                                if (returnModel.isok) {
-//                                    returnModel.setSuccess();
-//                                }
-//                            }
+//                        if (returnModel.isok) {
+//                            returnModel.setSuccess();
 //                        }
+                        String useId = null;
+                        String accessToken = null;
+                        String useType = null;
+                        if (cookies != null) {
+                            for (Cookie row : cookies
+                            ) {
+                                if (row.getName().equals(TokenName)) {
+                                    accessToken = row.getValue();
+                                }
+                                if (row.getName().equals(UseId)) {
+                                    useId = row.getValue();
+                                }
+                                if (row.getName().equals(UseType)) {
+                                    useType = row.getValue();
+                                }
+                            }
+                            if ((accessToken != null) && (useId != null) && (useType != null)) {
+                                TokenClass tokenClass = new TokenClass();
+                                tokenClass.setUseId(useId);
+                                tokenClass.setAccessToken(accessToken);
+                                tokenClass.setUseType(useType);
+                                CheckAccessTokenClass checkAccessTokenClass = new CheckAccessTokenClass();
+                                returnModel.isok = checkAccessTokenClass.isAccessTokenOk(tokenClass);
+                                if (returnModel.isok) {
+                                    returnModel.setSuccess();
+                                }
+                            }
+                        }
                     }
                     break;
                     case IS_WEIXIN_PUBLIC:
