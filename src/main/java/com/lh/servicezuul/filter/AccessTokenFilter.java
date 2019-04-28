@@ -59,29 +59,14 @@ public class AccessTokenFilter extends ZuulFilter {
 
     @Override
     public Object run() {
-        Logger logger = Logger.getLogger("chapter07");
         boolean isCheck;
-        int nStatusCode = 401;
+        Logger logger = Logger.getLogger("chapter07");
         ReturnModel returnModel = new ReturnModel();
         returnModel.message = String.format("%s:无合法通行证，不允许访问！", returnModel.message);
+        int nStatusCode = 401;
         RequestContext ctx = RequestContext.getCurrentContext();
         HttpServletRequest request = ctx.getRequest();
         HttpServletResponse response = ctx.getResponse();
-        String[] whiteList = {"http://192.168.10.71:2000", "http://192.168.10.71"};
-        String myOrigin = request.getHeader("origin");
-        logger.info("Head[myOrigin]:" + myOrigin);
-        boolean isValid = false;
-        for (String ip : whiteList) {
-            if (myOrigin != null && myOrigin.equals(ip)) {
-                isValid = true;
-                break;
-            }
-        }
-        response.setHeader("Access-Control-Allow-Origin", isValid ? myOrigin : "null");
-        response.setHeader("Access-Control-Allow-Method", "POST");
-        response.setHeader("Access-Control-Allow-Credentials", "true");
-        response.setContentType("application/json;text/html;charset=UTF-8");
-        response.setCharacterEncoding("UTF-8");
 
         String useIp = request.getRemoteAddr();
         Enumeration headerNames = request.getHeaderNames();
@@ -136,12 +121,25 @@ public class AccessTokenFilter extends ZuulFilter {
                     //检查accessToken
                     break;
                     case IS_BS: {
+                        String[] whiteList = {"http://192.168.10.71:2000", "http://192.168.10.71"};
+                        String myOrigin = request.getHeader("origin");
+                        logger.info("Head[myOrigin]:" + myOrigin);
+                        boolean isValid = false;
+                        for (String ip : whiteList) {
+                            if (myOrigin != null && myOrigin.equals(ip)) {
+                                isValid = true;
+                                break;
+                            }
+                        }
+                        response.setHeader("Access-Control-Allow-Origin", isValid ? myOrigin : "null");
+                        response.setHeader("Access-Control-Allow-Method", "POST");
+                        response.setHeader("Access-Control-Allow-Credentials", "true");
+                        response.setContentType("application/json;text/html;charset=UTF-8");
+                        response.setCharacterEncoding("UTF-8");
                         //检查cookie
                         Cookie[] cookies = request.getCookies();
                         returnModel.isok = cookies == null ? false : true;
-//                        if (returnModel.isok) {
-//                            returnModel.setSuccess();
-//                        }
+
                         String useId = null;
                         String accessToken = null;
                         String useType = null;
