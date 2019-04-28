@@ -80,9 +80,8 @@ public class AccessTokenFilter extends ZuulFilter {
         response.setHeader("Access-Control-Allow-Origin", isValid ? myOrigin : "null");
         response.setHeader("Access-Control-Allow-Method", "POST");
         response.setHeader("Access-Control-Allow-Credentials", "true");
-        response.setContentType("application/json");
+        response.setContentType("application/json;text/html;charset=UTF-8");
         response.setCharacterEncoding("UTF-8");
-        response.setContentType("text/html;charset=UTF-8");
 
         String useIp = request.getRemoteAddr();
         Enumeration headerNames = request.getHeaderNames();
