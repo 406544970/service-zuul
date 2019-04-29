@@ -77,6 +77,24 @@ public class AccessTokenFilter extends ZuulFilter {
         }
 
 //        logger.info("head:" + request.getHeaderNames());
+        String[] whiteList = {"http://192.168.10.71:2000"
+                , "http://192.168.10.71"
+                , "http://www.lh.com"
+                , "http://api.lh.com"};
+        String myOrigin = request.getHeader("origin");
+        logger.info("Head[myOrigin]:" + myOrigin);
+        boolean isValid = false;
+        for (String ip : whiteList) {
+            if (myOrigin != null && myOrigin.equals(ip)) {
+                isValid = true;
+                break;
+            }
+        }
+        response.setHeader("Access-Control-Allow-Origin", isValid ? myOrigin : "null");
+        response.setHeader("Access-Control-Allow-Method", "POST");
+        response.setHeader("Access-Control-Allow-Credentials", "true");
+        response.setContentType("application/json;text/html;charset=UTF-8");
+        response.setCharacterEncoding("UTF-8");
 
         if (myBlackNameList.isAllow(useIp)) {
             returnModel.isok = true;
@@ -121,21 +139,6 @@ public class AccessTokenFilter extends ZuulFilter {
                     //检查accessToken
                     break;
                     case IS_BS: {
-                        String[] whiteList = {"http://192.168.10.71:2000", "http://192.168.10.71"};
-                        String myOrigin = request.getHeader("origin");
-                        logger.info("Head[myOrigin]:" + myOrigin);
-                        boolean isValid = false;
-                        for (String ip : whiteList) {
-                            if (myOrigin != null && myOrigin.equals(ip)) {
-                                isValid = true;
-                                break;
-                            }
-                        }
-                        response.setHeader("Access-Control-Allow-Origin", isValid ? myOrigin : "null");
-                        response.setHeader("Access-Control-Allow-Method", "POST");
-                        response.setHeader("Access-Control-Allow-Credentials", "true");
-                        response.setContentType("application/json;text/html;charset=UTF-8");
-                        response.setCharacterEncoding("UTF-8");
                         //检查cookie
                         Cookie[] cookies = request.getCookies();
                         returnModel.isok = cookies == null ? false : true;
