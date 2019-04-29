@@ -1,7 +1,6 @@
 package com.lh.servicezuul.myclass;
 
 import com.lh.servicezuul.model.TokenClass;
-import com.lh.servicezuul.service.IdentityService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -15,8 +14,6 @@ public class CheckAccessTokenClass {
         super();
     }
 
-    @Autowired
-    private IdentityService identityService;
 
     public boolean isAccessTokenOk(TokenClass tokenClass) {
 //        boolean isOk = false;
