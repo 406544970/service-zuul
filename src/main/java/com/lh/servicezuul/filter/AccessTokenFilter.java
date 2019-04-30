@@ -26,9 +26,9 @@ public class AccessTokenFilter extends ZuulFilter {
         iniFilter();
     }
 
-    private final String TokenName = "AccessToken";
-    private final String UseId = "UseId";
-    private final String UseType = "UseType";
+    private final String TokenName = "accessToken";
+    private final String UseId = "useId";
+    private final String UseType = "useType";
 
     private MyWhiteNameList myWhiteNameList;
     private MyBlackNameList myBlackNameList;
@@ -69,12 +69,12 @@ public class AccessTokenFilter extends ZuulFilter {
         HttpServletResponse response = ctx.getResponse();
 
         String useIp = request.getRemoteAddr();
-        Enumeration headerNames = request.getHeaderNames();
-        while (headerNames.hasMoreElements()) {
-            String key = (String) headerNames.nextElement();
-            String value = request.getHeader(key);
-            logger.info("Head[" + key + "]:" + value);
-        }
+//        Enumeration headerNames = request.getHeaderNames();
+//        while (headerNames.hasMoreElements()) {
+//            String key = (String) headerNames.nextElement();
+//            String value = request.getHeader(key);
+////            logger.info("Head[" + key + "]:" + value);
+//        }
 
 //        logger.info("head:" + request.getHeaderNames());
         String[] whiteList = {"http://192.168.10.71:2000"
@@ -82,7 +82,6 @@ public class AccessTokenFilter extends ZuulFilter {
                 , "http://www.lh.com"
                 , "http://api.lh.com"};
         String myOrigin = request.getHeader("origin");
-        logger.info("Head[myOrigin]:" + myOrigin);
         boolean isValid = false;
         for (String ip : whiteList) {
             if (myOrigin != null && myOrigin.equals(ip)) {
@@ -100,7 +99,6 @@ public class AccessTokenFilter extends ZuulFilter {
             returnModel.isok = true;
             myWhiteNameList = new MyWhiteNameList();
             String getRequestURI = request.getRequestURI();
-            logger.info("useContextPath:" + getRequestURI);
             IsCheckWhitePath isCheckWhitePath = new IsCheckWhitePath();
 
             if (isCheckWhitePath.isCheckWhite(getRequestURI)) {
@@ -189,6 +187,20 @@ public class AccessTokenFilter extends ZuulFilter {
         } else {
             returnModel.message = String.format("%s:您的IP(%s)已进入黑名单，不允许访问！", returnModel.message, useIp);
         }
+String resultBody ="<div class=\"top\">";
+        resultBody +="<form name=\"userLoginActionForm\" id=\"userLoginActionForm\" method=\"POST\" action=\"\" target=\"_parent\">";
+        resultBody +="<input type=\"text\" autofocus=\"true\" id=\"username\" name=\"username\" maxlength=\"20\" placeholder=\"帐号\"";
+        resultBody +="onkeydown=\"UserEnter(event)\" onfocus=\"hideVcode()\"/>";
+        resultBody +="<input type=\"password\" id=\"userpwd\" name=\"userpwd\" maxlength=\"20\" placeholder=\" 密码\" ";
+        resultBody +="onkeydown=\"PassEnter(event)\"/>";
+        resultBody +="<input type=\"text\" id=\"validatecode\"  placeholder=\" 验证码\"";
+        resultBody +="onkeydown=\"ValidateCodeEnter(event)\">";
+        resultBody +="<img id=\"vcodesrc\" onclick=\"updateValidateImage()\" src=\"\"  style=\"display: none\">";
+        resultBody +="<input type=\"button\" value=\"\" id=\"login_bt\" name=\"login_bt\"/>";
+        resultBody +="<a href=\"\" class=\"forget\">忘记密码</a>";
+        resultBody +="</form>";
+        resultBody +="</div>";
+
 
 
         if (!returnModel.isok) {
@@ -196,7 +208,7 @@ public class AccessTokenFilter extends ZuulFilter {
             ctx.setResponseStatusCode(nStatusCode);
             ctx.getResponse().setContentType("text/html;charset=UTF-8");
             Gson gson = new Gson();
-            ctx.setResponseBody(gson.toJson(returnModel));
+            ctx.setResponseBody(resultBody);
         }
         return null;
     }
