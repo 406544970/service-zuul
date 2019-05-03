@@ -32,7 +32,7 @@ public class Swagger2 {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("梁昊通用权限控制粒子层")
+                .title("梁昊通用路由控制粒子层")
                 .description("包括：适用于BS、CS、公众号、小程序、安卓苹果跨平台调用")
                 .termsOfServiceUrl("http://www.baidu.com/")
                 .version("1.1")
