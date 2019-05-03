@@ -16,6 +16,7 @@ public class ServiceZuulApplication {
 
 	public static void main(String[] args) {
 		new SpringApplicationBuilder(ServiceZuulApplication.class).web(true).run(args);
+		//        System.out.println("http://localhost:2000/swagger-ui.html");
 	}
 
 	@Bean

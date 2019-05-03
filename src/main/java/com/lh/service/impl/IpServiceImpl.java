@@ -20,17 +20,18 @@ public class IpServiceImpl implements IpService {
     IpBaseMapper ipBaseMapper;
 
     @Override
-    public List<String> getDomainList(String selectSign) {
+    public List<String> getDomainList() {
         return ipBaseMapper.getIpList("DO");
     }
 
     @Override
-    public List<String> getWhileList(String selectSign) {
+    public List<String> getWhileList() {
         return ipBaseMapper.getIpList("WH");
     }
 
     @Override
-    public List<String> getBlackList(String selectSign) {
+    public List<String> getBlackList() {
         return ipBaseMapper.getIpList("BL");
     }
+
 }

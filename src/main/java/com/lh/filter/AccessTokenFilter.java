@@ -80,7 +80,7 @@ public class AccessTokenFilter extends ZuulFilter {
 ////            logger.info("Head[" + key + "]:" + value);
 //        }
 
-        myDomainList.setNameList(ipService.getDomainList("DO"));
+        myDomainList.setNameList(ipService.getDomainList());
         String[] whiteList = myDomainList.getNameList().toArray(new String[myDomainList.getListCount()]);
         String myOrigin = request.getHeader("origin");
         boolean isValid = false;

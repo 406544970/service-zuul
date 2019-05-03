@@ -2,6 +2,9 @@ package com.lh.apicontrol;
 
 import com.lh.service.IpService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.web.bind.annotation.*;
@@ -24,18 +27,37 @@ public class IpBaseController {
     IpService ipService;
 
 
+    /**
+     * 得到域名
+     *
+     * @return 返回列表
+     */
+    @ApiOperation(value = "得到域名", notes = "返回列表")
     @PostMapping("/getDomainList")
     public List<String> getDomainList(){
-        return ipService.getDomainList("DO");
+        return ipService.getDomainList();
     }
 
-//    @PostMapping("/getDomainList")
-//    public List<String> getDomainList(){
-//        return ipService.getDomainList("DO");
-//    }
-//    @PostMapping("/getDomainList")
-//    public List<String> getDomainList(){
-//        return ipService.getDomainList("DO");
-//    }
+    /**
+     * 白名单
+     *
+     * @return 返回列表
+     */
+    @ApiOperation(value = "白名单", notes = "返回列表")
+    @PostMapping("/getWhileList")
+    public List<String> getWhileList(){
+        return ipService.getWhileList();
+    }
+
+    /**
+     * 黑名单
+     *
+     * @return 返回列表
+     */
+    @ApiOperation(value = "黑名单", notes = "返回列表")
+    @PostMapping("/getBlackList")
+    public List<String> getBlackList(){
+        return ipService.getBlackList();
+    }
 
 }

@@ -9,8 +9,8 @@ import java.util.List;
  * @editLog
  */
 public interface IpService {
-    List<String> getDomainList(String selectSign);
-    List<String> getWhileList(String selectSign);
-    List<String> getBlackList(String selectSign);
+    List<String> getDomainList();
+    List<String> getWhileList();
+    List<String> getBlackList();
 
 }
