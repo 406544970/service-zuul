@@ -48,21 +48,6 @@ public abstract class MyNameList {
         }
         return this.nameList.size();
     }
-//    private List<String> getNameList() {
-//        List<String> list = new ArrayList<>();
-//        if (this.isWhite) {
-//            list.add("192.168.2.156");
-//            list.add("192.168.2.157");
-//            list.add("192.168.2.158");
-//            list.add("192.168.2.159");
-//        } else {
-//            list.add("192.168.1.103");
-//            list.add("192.168.1.157");
-//            list.add("192.168.1.158");
-//            list.add("192.168.1.159");
-//        }
-//        return list;
-//    }
 
     /**
      * @param ip 客户端IP
