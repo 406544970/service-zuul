@@ -1,4 +1,4 @@
-package com.lh.servicezuul.myclass;
+package com.lh.myclass;
 
 /**
  * @author 梁昊

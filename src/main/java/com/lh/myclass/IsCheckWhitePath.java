@@ -1,4 +1,4 @@
-package com.lh.servicezuul.myclass;
+package com.lh.myclass;
 
 import java.util.ArrayList;
 import java.util.List;

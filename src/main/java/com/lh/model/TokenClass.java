@@ -1,4 +1,4 @@
-package com.lh.servicezuul.model;
+package com.lh.model;
 
 /**
  * @program: service-zuul

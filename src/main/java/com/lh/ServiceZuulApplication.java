@@ -1,6 +1,6 @@
-package com.lh.servicezuul;
+package com.lh;
 
-import com.lh.servicezuul.filter.AccessTokenFilter;
+import com.lh.filter.AccessTokenFilter;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;

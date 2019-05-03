@@ -1,4 +1,4 @@
-package com.lh.servicezuul.myenum;
+package com.lh.myenum;
 
 /**
  * @author 梁昊

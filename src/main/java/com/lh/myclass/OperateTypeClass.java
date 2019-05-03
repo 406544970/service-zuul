@@ -1,6 +1,6 @@
-package com.lh.servicezuul.myclass;
+package com.lh.myclass;
 
-import com.lh.servicezuul.myenum.EnumClass;
+import com.lh.myenum.EnumClass;
 
 import java.util.ArrayList;
 import java.util.List;

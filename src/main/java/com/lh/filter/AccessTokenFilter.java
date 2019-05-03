@@ -1,17 +1,20 @@
-package com.lh.servicezuul.filter;
+package com.lh.filter;
 
 import com.google.gson.Gson;
-import com.lh.servicezuul.model.ReturnModel;
-import com.lh.servicezuul.model.TokenClass;
-import com.lh.servicezuul.myclass.*;
-import com.lh.servicezuul.myenum.EnumClass;
+import com.lh.model.TokenClass;
+import com.lh.myclass.*;
+import com.lh.myenum.EnumClass;
+import com.lh.model.ReturnModel;
+import com.lh.service.IpService;
+import com.lh.service.impl.IpServiceImpl;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Enumeration;
+import java.util.List;
 import java.util.logging.Logger;
 
 /**
@@ -21,6 +24,9 @@ import java.util.logging.Logger;
  * @editLog 过滤IP黑名单和白名单，判断是BS还是CS，判断是否需要身份验证
  */
 public class AccessTokenFilter extends ZuulFilter {
+    @Autowired
+    IpService ipService;
+
     public AccessTokenFilter() {
         super();
         iniFilter();
@@ -32,18 +38,16 @@ public class AccessTokenFilter extends ZuulFilter {
 
     private MyWhiteNameList myWhiteNameList;
     private MyBlackNameList myBlackNameList;
+    private MyDomainList myDomainList;
 
-    private void iniFilter() {
+    public void iniFilter() {
         myBlackNameList = new MyBlackNameList();
+        myDomainList = new MyDomainList();
+        myWhiteNameList = new MyWhiteNameList();
     }
 
     @Override
     public boolean shouldFilter() {
-//        RequestContext ctx = RequestContext.getCurrentContext();
-//        HttpServletRequest request = ctx.getRequest();
-//        if (request.getMethod().equals("OPTIONS")) {
-//            return false;
-//        }
         return true;
     }
 
@@ -76,11 +80,8 @@ public class AccessTokenFilter extends ZuulFilter {
 ////            logger.info("Head[" + key + "]:" + value);
 //        }
 
-//        logger.info("head:" + request.getHeaderNames());
-        String[] whiteList = {"http://192.168.10.71:2000"
-                , "http://192.168.10.71"
-                , "http://www.lh.com"
-                , "http://api.lh.com"};
+        myDomainList.setNameList(ipService.getDomainList("DO"));
+        String[] whiteList = myDomainList.getNameList().toArray(new String[myDomainList.getListCount()]);
         String myOrigin = request.getHeader("origin");
         boolean isValid = false;
         for (String ip : whiteList) {

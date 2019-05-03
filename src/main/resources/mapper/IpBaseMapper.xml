@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lh.dao.IpBaseMapper">
+    <!-- 注释：得到域名、白名单、黑名单 -->
+    <select id="getIpList" resultType="java.lang.String" parameterType="java.lang.String">
+        SELECT
+        id
+        FROM sys_ipList
+        <where>
+            AND stopSign = '0'
+            AND selectSign = #{selectSign,jdbcType=VARCHAR}
+        </where>
+        ORDER BY sortNo
+    </select>
+
+</mapper>

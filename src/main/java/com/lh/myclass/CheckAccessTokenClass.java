@@ -1,7 +1,6 @@
-package com.lh.servicezuul.myclass;
+package com.lh.myclass;
 
-import com.lh.servicezuul.model.TokenClass;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.lh.model.TokenClass;
 
 /**
  * @author 梁昊
