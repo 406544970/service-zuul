@@ -1,6 +1,7 @@
 package com.lh.apicontrol;
 
 import com.lh.service.IpService;
+import com.lh.unit.RedisOperator;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -26,6 +27,8 @@ public class IpBaseController {
     @Autowired
     IpService ipService;
 
+    @Autowired
+    RedisOperator redisOperator;
 
     /**
      * 得到域名
@@ -35,7 +38,12 @@ public class IpBaseController {
     @ApiOperation(value = "得到域名", notes = "返回列表")
     @PostMapping("/getDomainList")
     public List<String> getDomainList(){
-        return ipService.getDomainList();
+        List<String> domainList = redisOperator.getDomainList();
+        if (domainList == null || domainList.isEmpty()) {
+            return ipService.getDomainList();
+        }
+        else
+            return domainList;
     }
 
     /**
@@ -60,4 +68,8 @@ public class IpBaseController {
         return ipService.getBlackList();
     }
 
+    @PostMapping("/insertDomain")
+    public int insertDomain(){
+        return redisOperator.insertDomain(ipService.getDomainList());
+    }
 }
