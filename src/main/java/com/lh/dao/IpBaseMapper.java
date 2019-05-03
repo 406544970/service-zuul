@@ -1,6 +1,5 @@
 package com.lh.dao;
 
-import com.lh.model.IpBase;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -17,9 +16,8 @@ public interface IpBaseMapper {
     /**
      * 得到域名、白名单、黑名单
      *
-     * @return 返回列表
+     * @param selectSign 查询标识
+     * @return
      */
-//    List<IpBase> getIpList(@Param("selectSign") String selectSign);
     List<String> getIpList(@Param("selectSign") String selectSign);
-//    List<IpBase> getIpList();
 }

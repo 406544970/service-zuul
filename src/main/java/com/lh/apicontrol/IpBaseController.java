@@ -29,4 +29,13 @@ public class IpBaseController {
         return ipService.getDomainList("DO");
     }
 
+//    @PostMapping("/getDomainList")
+//    public List<String> getDomainList(){
+//        return ipService.getDomainList("DO");
+//    }
+//    @PostMapping("/getDomainList")
+//    public List<String> getDomainList(){
+//        return ipService.getDomainList("DO");
+//    }
+
 }

@@ -17,6 +17,7 @@ public class MyOperatorControl {
     public void downLine(){
         getInstance().shutdownComponent();
     }
+
     @PostMapping("/myport")
     public String myPort(){
         return "myPort: " + this.myPort;
