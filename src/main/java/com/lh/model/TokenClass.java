@@ -10,6 +10,7 @@ package com.lh.model;
 public class TokenClass {
     private String useId;
     private String useType;
+    private String clientType;
 
     public String getUseId() {
         return useId;
@@ -35,5 +36,13 @@ public class TokenClass {
 
     public void setUseType(String useType) {
         this.useType = useType;
+    }
+
+    public String getClientType() {
+        return clientType;
+    }
+
+    public void setClientType(String clientType) {
+        this.clientType = clientType;
     }
 }

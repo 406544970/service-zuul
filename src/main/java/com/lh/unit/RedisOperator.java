@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -60,6 +59,27 @@ public class RedisOperator {
 
     public int insertWhite(List<String> whiteList){
         return insertIntoRedisSet("whiteSet",whiteList);
+    }
+
+    /**
+     * 增加或修改指定键值
+     *
+     * @param key   键
+     * @param value 值
+     */
+    public void saveString(String key, String value) {
+        stringRedisTemplate.opsForValue().set(key, value);
+    }
+
+    public String getString(String key) {
+        if (key != null)
+            return stringRedisTemplate.opsForValue().get(key);
+        else
+            return null;
+    }
+
+    public void delete(String key) {
+        stringRedisTemplate.delete(key);
     }
 
 }

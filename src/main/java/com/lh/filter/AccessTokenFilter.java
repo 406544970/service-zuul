@@ -1,12 +1,12 @@
 package com.lh.filter;
 
 import com.google.gson.Gson;
+import com.lh.model.ReturnModel;
 import com.lh.model.TokenClass;
 import com.lh.myclass.*;
 import com.lh.myenum.EnumClass;
-import com.lh.model.ReturnModel;
 import com.lh.service.IpService;
-import com.lh.service.impl.IpServiceImpl;
+import com.lh.unit.RedisOperator;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 import java.util.logging.Logger;
 
 /**
@@ -27,6 +26,7 @@ public class AccessTokenFilter extends ZuulFilter {
     @Autowired
     IpService ipService;
 
+
     public AccessTokenFilter() {
         super();
         iniFilter();
@@ -35,6 +35,7 @@ public class AccessTokenFilter extends ZuulFilter {
     private final String TokenName = "accessToken";
     private final String UseId = "useId";
     private final String UseType = "useType";
+    private final String ClientType = "clientType";
 
     private MyWhiteNameList myWhiteNameList;
     private MyBlackNameList myBlackNameList;
@@ -123,11 +124,13 @@ public class AccessTokenFilter extends ZuulFilter {
                         Object accessToken = request.getParameter(TokenName);
                         Object useId = request.getParameter(UseId);
                         Object useType = request.getParameter(UseType);
+                        Object clientType = request.getParameter(ClientType);
                         if ((accessToken != null) && (useId != null) && (useType != null)) {
                             TokenClass tokenClass = new TokenClass();
                             tokenClass.setUseId(useId.toString());
                             tokenClass.setAccessToken(accessToken.toString());
                             tokenClass.setUseType(useType.toString());
+                            tokenClass.setClientType(clientType.toString());
                             CheckAccessTokenClass checkAccessTokenClass = new CheckAccessTokenClass();
                             returnModel.isok = checkAccessTokenClass.isAccessTokenOk(tokenClass);
                             if (returnModel.isok) {
@@ -145,9 +148,10 @@ public class AccessTokenFilter extends ZuulFilter {
                         String useId = null;
                         String accessToken = null;
                         String useType = null;
+                        String clientType = null;
                         if (cookies != null) {
                             for (Cookie row : cookies
-                            ) {
+                                    ) {
                                 if (row.getName().equals(TokenName)) {
                                     accessToken = row.getValue();
                                 }
@@ -157,12 +161,16 @@ public class AccessTokenFilter extends ZuulFilter {
                                 if (row.getName().equals(UseType)) {
                                     useType = row.getValue();
                                 }
+                                if (row.getName().equals(ClientType)) {
+                                    clientType = row.getValue();
+                                }
                             }
-                            if ((accessToken != null) && (useId != null) && (useType != null)) {
+                            if ((accessToken != null) && (useId != null) && (useType != null) && (clientType != null)) {
                                 TokenClass tokenClass = new TokenClass();
                                 tokenClass.setUseId(useId);
                                 tokenClass.setAccessToken(accessToken);
                                 tokenClass.setUseType(useType);
+                                tokenClass.setClientType(clientType);
                                 CheckAccessTokenClass checkAccessTokenClass = new CheckAccessTokenClass();
                                 returnModel.isok = checkAccessTokenClass.isAccessTokenOk(tokenClass);
                                 if (returnModel.isok) {
@@ -188,20 +196,19 @@ public class AccessTokenFilter extends ZuulFilter {
         } else {
             returnModel.message = String.format("%s:您的IP(%s)已进入黑名单，不允许访问！", returnModel.message, useIp);
         }
-String resultBody ="<div class=\"top\">";
-        resultBody +="<form name=\"userLoginActionForm\" id=\"userLoginActionForm\" method=\"POST\" action=\"\" target=\"_parent\">";
-        resultBody +="<input type=\"text\" autofocus=\"true\" id=\"username\" name=\"username\" maxlength=\"20\" placeholder=\"帐号\"";
-        resultBody +="onkeydown=\"UserEnter(event)\" onfocus=\"hideVcode()\"/>";
-        resultBody +="<input type=\"password\" id=\"userpwd\" name=\"userpwd\" maxlength=\"20\" placeholder=\" 密码\" ";
-        resultBody +="onkeydown=\"PassEnter(event)\"/>";
-        resultBody +="<input type=\"text\" id=\"validatecode\"  placeholder=\" 验证码\"";
-        resultBody +="onkeydown=\"ValidateCodeEnter(event)\">";
-        resultBody +="<img id=\"vcodesrc\" onclick=\"updateValidateImage()\" src=\"\"  style=\"display: none\">";
-        resultBody +="<input type=\"button\" value=\"\" id=\"login_bt\" name=\"login_bt\"/>";
-        resultBody +="<a href=\"\" class=\"forget\">忘记密码</a>";
-        resultBody +="</form>";
-        resultBody +="</div>";
-
+        String resultBody = "<div class=\"top\">";
+        resultBody += "<form name=\"userLoginActionForm\" id=\"userLoginActionForm\" method=\"POST\" action=\"\" target=\"_parent\">";
+        resultBody += "<input type=\"text\" autofocus=\"true\" id=\"username\" name=\"username\" maxlength=\"20\" placeholder=\"帐号\"";
+        resultBody += "onkeydown=\"UserEnter(event)\" onfocus=\"hideVcode()\"/>";
+        resultBody += "<input type=\"password\" id=\"userpwd\" name=\"userpwd\" maxlength=\"20\" placeholder=\" 密码\" ";
+        resultBody += "onkeydown=\"PassEnter(event)\"/>";
+        resultBody += "<input type=\"text\" id=\"validatecode\"  placeholder=\" 验证码\"";
+        resultBody += "onkeydown=\"ValidateCodeEnter(event)\">";
+        resultBody += "<img id=\"vcodesrc\" onclick=\"updateValidateImage()\" src=\"\"  style=\"display: none\">";
+        resultBody += "<input type=\"button\" value=\"\" id=\"login_bt\" name=\"login_bt\"/>";
+        resultBody += "<a href=\"\" class=\"forget\">忘记密码</a>";
+        resultBody += "</form>";
+        resultBody += "</div>";
 
 
         if (!returnModel.isok) {
@@ -213,4 +220,5 @@ String resultBody ="<div class=\"top\">";
         }
         return null;
     }
+
 }
