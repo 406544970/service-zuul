@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Base64;
 import java.util.List;
 
 /**
@@ -52,9 +53,14 @@ public class IpBaseController {
      * @return 返回列表
      */
     @ApiOperation(value = "白名单", notes = "返回列表")
-    @PostMapping("/getWhileList")
-    public List<String> getWhileList(){
-        return ipService.getWhileList();
+    @PostMapping("/getWhiteList")
+    public List<String> getWhiteList(){
+        List<String> whiteList = redisOperator.getWhiteList();
+        if (whiteList == null || whiteList.isEmpty()) {
+            return ipService.getWhiteList();
+        }
+        else
+            return whiteList;
     }
 
     /**
@@ -65,11 +71,43 @@ public class IpBaseController {
     @ApiOperation(value = "黑名单", notes = "返回列表")
     @PostMapping("/getBlackList")
     public List<String> getBlackList(){
-        return ipService.getBlackList();
+        List<String> blackList = redisOperator.getBlackList();
+        if (blackList == null || blackList.isEmpty()) {
+            return ipService.getBlackList();
+        }
+        else
+            return blackList;
     }
 
+    /**
+     * 同步域名
+     *
+     * @return 已同步数量
+     */
+    @ApiOperation(value = "同步域名", notes = "已同步数量")
     @PostMapping("/insertDomain")
     public int insertDomain(){
         return redisOperator.insertDomain(ipService.getDomainList());
+    }
+    /**
+     * 同步黑名单
+     *
+     * @return 已同步数量
+     */
+    @ApiOperation(value = "同步黑名单", notes = "已同步数量")
+    @PostMapping("/insertBlack")
+    public int insertBlack(){
+        return redisOperator.insertBlack(ipService.getBlackList());
+    }
+
+    /**
+     * 同步白名单
+     *
+     * @return 已同步数量
+     */
+    @ApiOperation(value = "同步白名单", notes = "已同步数量")
+    @PostMapping("/insertWhite")
+    public int insertWhite(){
+        return redisOperator.insertWhite(ipService.getWhiteList());
     }
 }

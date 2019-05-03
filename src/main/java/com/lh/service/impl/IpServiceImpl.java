@@ -31,7 +31,7 @@ public class IpServiceImpl implements IpService {
      * @return 得到白名单，对指定方法需要验证白名单
      */
     @Override
-    public List<String> getWhileList() {
+    public List<String> getWhiteList() {
         return ipBaseMapper.getIpList("WH");
     }
 

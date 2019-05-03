@@ -10,7 +10,7 @@ import java.util.List;
  */
 public interface IpService {
     List<String> getDomainList();
-    List<String> getWhileList();
+    List<String> getWhiteList();
     List<String> getBlackList();
 
 }

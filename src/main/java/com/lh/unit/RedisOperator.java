@@ -38,11 +38,28 @@ public class RedisOperator {
         return new ArrayList(members);
     }
 
+    public List<String> getDomainList(){
+        return getFormRedisSet("domainSet");
+    }
+
     public int insertDomain(List<String> domainList){
         return insertIntoRedisSet("domainSet",domainList);
     }
 
-    public List<String> getDomainList(){
-        return getFormRedisSet("domainSet");
+    public List<String> getBlackList(){
+        return getFormRedisSet("blackSet");
     }
+
+    public int insertBlack(List<String> blackList){
+        return insertIntoRedisSet("blackSet",blackList);
+    }
+
+    public List<String> getWhiteList(){
+        return getFormRedisSet("whiteSet");
+    }
+
+    public int insertWhite(List<String> whiteList){
+        return insertIntoRedisSet("whiteSet",whiteList);
+    }
+
 }
