@@ -6,7 +6,6 @@ import com.lh.model.TokenClass;
 import com.lh.myclass.*;
 import com.lh.myenum.EnumClass;
 import com.lh.service.IpService;
-import com.lh.unit.RedisOperator;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +24,8 @@ import java.util.logging.Logger;
 public class AccessTokenFilter extends ZuulFilter {
     @Autowired
     IpService ipService;
-
+    @Autowired
+    CheckAccessTokenClass checkAccessTokenClass;
 
     public AccessTokenFilter() {
         super();
@@ -131,7 +131,7 @@ public class AccessTokenFilter extends ZuulFilter {
                             tokenClass.setAccessToken(accessToken.toString());
                             tokenClass.setUseType(useType.toString());
                             tokenClass.setClientType(clientType.toString());
-                            CheckAccessTokenClass checkAccessTokenClass = new CheckAccessTokenClass();
+//                            CheckAccessTokenClass checkAccessTokenClass = new CheckAccessTokenClass();
                             returnModel.isok = checkAccessTokenClass.isAccessTokenOk(tokenClass);
                             if (returnModel.isok) {
                                 returnModel.setSuccess();
@@ -144,12 +144,11 @@ public class AccessTokenFilter extends ZuulFilter {
                         //检查cookie
                         Cookie[] cookies = request.getCookies();
                         returnModel.isok = cookies == null ? false : true;
-
-                        String useId = null;
-                        String accessToken = null;
-                        String useType = null;
-                        String clientType = null;
-                        if (cookies != null) {
+                        if (returnModel.isok) {
+                            String useId = null;
+                            String accessToken = null;
+                            String useType = null;
+                            String clientType = null;
                             for (Cookie row : cookies
                                     ) {
                                 if (row.getName().equals(TokenName)) {
@@ -171,7 +170,7 @@ public class AccessTokenFilter extends ZuulFilter {
                                 tokenClass.setAccessToken(accessToken);
                                 tokenClass.setUseType(useType);
                                 tokenClass.setClientType(clientType);
-                                CheckAccessTokenClass checkAccessTokenClass = new CheckAccessTokenClass();
+//                                CheckAccessTokenClass checkAccessTokenClass = new CheckAccessTokenClass();
                                 returnModel.isok = checkAccessTokenClass.isAccessTokenOk(tokenClass);
                                 if (returnModel.isok) {
                                     returnModel.setSuccess();

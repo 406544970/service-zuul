@@ -11,6 +11,7 @@ public class TokenClass {
     private String useId;
     private String useType;
     private String clientType;
+    private String accessToken;
 
     public String getUseId() {
         return useId;
@@ -27,8 +28,6 @@ public class TokenClass {
     public void setAccessToken(String accessToken) {
         this.accessToken = accessToken;
     }
-
-    private String accessToken;
 
     public String getUseType() {
         return useType;

@@ -3,6 +3,7 @@ package com.lh.myclass;
 import com.lh.model.TokenClass;
 import com.lh.unit.RedisOperator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  * @author 梁昊
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @function
  * @editLog
  */
+@Component
 public class CheckAccessTokenClass {
     @Autowired
     RedisOperator redisOperator;
@@ -40,7 +42,7 @@ public class CheckAccessTokenClass {
      * @return
      */
     private boolean checkUseToken(String clientType, String useId, String useType, String token) {
-        String keyName = String.format("%s%s:%s", clientType, useId, useType);
+        String keyName = String.format("%s%s:%s", clientType, useType, useId);
         String accessToken = redisOperator.getString(keyName);
         if (accessToken != null) {
             return token.equals(accessToken);
