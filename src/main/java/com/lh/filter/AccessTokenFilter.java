@@ -6,6 +6,7 @@ import com.lh.model.TokenClass;
 import com.lh.myclass.*;
 import com.lh.myenum.EnumClass;
 import com.lh.service.IpService;
+import com.lh.unit.CheckAccessTokenClass;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -131,7 +132,6 @@ public class AccessTokenFilter extends ZuulFilter {
                             tokenClass.setAccessToken(accessToken.toString());
                             tokenClass.setUseType(useType.toString());
                             tokenClass.setClientType(clientType.toString());
-//                            CheckAccessTokenClass checkAccessTokenClass = new CheckAccessTokenClass();
                             returnModel.isok = checkAccessTokenClass.isAccessTokenOk(tokenClass);
                             if (returnModel.isok) {
                                 returnModel.setSuccess();
@@ -170,7 +170,6 @@ public class AccessTokenFilter extends ZuulFilter {
                                 tokenClass.setAccessToken(accessToken);
                                 tokenClass.setUseType(useType);
                                 tokenClass.setClientType(clientType);
-//                                CheckAccessTokenClass checkAccessTokenClass = new CheckAccessTokenClass();
                                 returnModel.isok = checkAccessTokenClass.isAccessTokenOk(tokenClass);
                                 if (returnModel.isok) {
                                     returnModel.setSuccess();
