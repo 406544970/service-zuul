@@ -1,6 +1,5 @@
 package com.lh.filter;
 
-import com.google.gson.Gson;
 import com.lh.model.ReturnModel;
 import com.lh.model.TokenClass;
 import com.lh.myclass.*;
@@ -9,12 +8,16 @@ import com.lh.service.IpService;
 import com.lh.unit.CheckAccessTokenClass;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
+import io.jmnarloch.spring.cloud.ribbon.support.RibbonFilterContextHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.logging.Logger;
+
+import static org.springframework.cloud.netflix.zuul.filters.support.FilterConstants.FORWARD_TO_KEY;
+import static org.springframework.cloud.netflix.zuul.filters.support.FilterConstants.SERVICE_ID_KEY;
 
 /**
  * @author 梁昊
@@ -50,7 +53,13 @@ public class AccessTokenFilter extends ZuulFilter {
 
     @Override
     public boolean shouldFilter() {
-        return true;
+//        return true;
+        RequestContext ctx = RequestContext.getCurrentContext();
+        // a filter has already forwarded
+        // a filter has already determined serviceId
+        return !ctx.containsKey(FORWARD_TO_KEY)
+                && !ctx.containsKey(SERVICE_ID_KEY);
+
     }
 
     @Override
@@ -208,12 +217,16 @@ public class AccessTokenFilter extends ZuulFilter {
         resultBody += "</form>";
         resultBody += "</div>";
 
-
-        if (!returnModel.isok) {
+        if (returnModel.isok) {
+            if (useIp.equals("192.168.1.123")) {
+                RibbonFilterContextHolder.getCurrentContext().add("version", "1");
+            } else {
+                RibbonFilterContextHolder.getCurrentContext().add("version", "2");
+            }
+        } else {
             ctx.setSendZuulResponse(false);
             ctx.setResponseStatusCode(nStatusCode);
             ctx.getResponse().setContentType("text/html;charset=UTF-8");
-            Gson gson = new Gson();
             ctx.setResponseBody(resultBody);
         }
         return null;
