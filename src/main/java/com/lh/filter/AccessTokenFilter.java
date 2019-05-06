@@ -218,7 +218,7 @@ public class AccessTokenFilter extends ZuulFilter {
         resultBody += "</div>";
 
         if (returnModel.isok) {
-            if (useIp.equals("192.168.1.123")) {
+            if (!useIp.equals("192.168.1.123")) {
                 RibbonFilterContextHolder.getCurrentContext().add("version", "1");
             } else {
                 RibbonFilterContextHolder.getCurrentContext().add("version", "2");

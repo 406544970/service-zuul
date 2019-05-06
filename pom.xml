@@ -106,6 +106,7 @@
 			<artifactId>pagehelper</artifactId>
 			<version>4.1.6</version>
 		</dependency>
+		<!--zull灰度发布-->
         <dependency>
             <groupId>io.jmnarloch</groupId>
             <artifactId>ribbon-discovery-filter-spring-cloud-starter</artifactId>
