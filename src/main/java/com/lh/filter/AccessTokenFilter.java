@@ -6,14 +6,15 @@ import com.lh.myclass.*;
 import com.lh.myenum.EnumClass;
 import com.lh.service.IpService;
 import com.lh.unit.CheckAccessTokenClass;
+import com.lh.unit.RedisOperator;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
-import io.jmnarloch.spring.cloud.ribbon.support.RibbonFilterContextHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 import java.util.logging.Logger;
 
 import static org.springframework.cloud.netflix.zuul.filters.support.FilterConstants.FORWARD_TO_KEY;
@@ -30,6 +31,8 @@ public class AccessTokenFilter extends ZuulFilter {
     IpService ipService;
     @Autowired
     CheckAccessTokenClass checkAccessTokenClass;
+    @Autowired
+    RedisOperator redisOperator;
 
     public AccessTokenFilter() {
         super();
@@ -91,7 +94,16 @@ public class AccessTokenFilter extends ZuulFilter {
 ////            logger.info("Head[" + key + "]:" + value);
 //        }
 
-        myDomainList.setNameList(ipService.getDomainList());
+        List<String> domainList = redisOperator.getDomainList();
+        if (domainList == null) {
+            myDomainList.setNameList(ipService.getDomainList());
+        } else {
+            if (domainList.isEmpty()) {
+                myDomainList.setNameList(ipService.getDomainList());
+            }
+            else
+                myDomainList.setNameList(domainList);
+        }
         String[] whiteList = myDomainList.getNameList().toArray(new String[myDomainList.getListCount()]);
         String myOrigin = request.getHeader("origin");
         boolean isValid = false;
@@ -218,11 +230,11 @@ public class AccessTokenFilter extends ZuulFilter {
         resultBody += "</div>";
 
         if (returnModel.isok) {
-            if (!useIp.equals("192.168.1.123")) {
-                RibbonFilterContextHolder.getCurrentContext().add("version", "1");
-            } else {
-                RibbonFilterContextHolder.getCurrentContext().add("version", "2");
-            }
+//            if (!useIp.equals("192.168.1.123")) {
+//                RibbonFilterContextHolder.getCurrentContext().add("version", "1");
+//            } else {
+//                RibbonFilterContextHolder.getCurrentContext().add("version", "2");
+//            }
         } else {
             ctx.setSendZuulResponse(false);
             ctx.setResponseStatusCode(nStatusCode);
