@@ -23,9 +23,10 @@ public class OperateTypeClass {
         list = new ArrayList<>();
         for (EnumClass.CheckIdentityEnum row : EnumClass.CheckIdentityEnum.values()
                 ) {
-            if (!row.toString().equals("-nkf-")) {
-                list.add(row.toString());
-            }
+            list.add(row.toString());
+//            if (!row.toString().equals("-nkf-")) {
+//                list.add(row.toString());
+//            }
         }
     }
 

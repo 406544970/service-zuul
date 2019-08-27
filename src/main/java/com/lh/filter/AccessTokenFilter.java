@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 import java.util.logging.Logger;
 
 import static org.springframework.cloud.netflix.zuul.filters.support.FilterConstants.FORWARD_TO_KEY;
@@ -94,17 +93,20 @@ public class AccessTokenFilter extends ZuulFilter {
 ////            logger.info("Head[" + key + "]:" + value);
 //        }
 
-        List<String> domainList = redisOperator.getDomainList();
-        if (domainList == null) {
-            myDomainList.setNameList(ipService.getDomainList());
-        } else {
-            if (domainList.isEmpty()) {
-                myDomainList.setNameList(ipService.getDomainList());
-            }
-            else
-                myDomainList.setNameList(domainList);
-        }
-        String[] whiteList = myDomainList.getNameList().toArray(new String[myDomainList.getListCount()]);
+//        List<String> domainList = redisOperator.getDomainList();
+//        if (domainList == null) {
+//            myDomainList.setNameList(ipService.getDomainList());
+//        } else {
+//            if (domainList.isEmpty()) {
+//                myDomainList.setNameList(ipService.getDomainList());
+//            }
+//            else
+//                myDomainList.setNameList(domainList);
+//        }
+//        String[] whiteList = myDomainList.getNameList().toArray(new String[myDomainList.getListCount()]);
+        String[] whiteList = new String[2];
+        whiteList[0] = "http://localhost:63342";
+        whiteList[1] = "http://www.lh.com";
         String myOrigin = request.getHeader("origin");
         boolean isValid = false;
         for (String ip : whiteList) {
@@ -162,6 +164,7 @@ public class AccessTokenFilter extends ZuulFilter {
                     //检查accessToken
                     break;
                     case IS_BS: {
+//                        returnModel.isok = true;
                         //检查cookie
                         Cookie[] cookies = request.getCookies();
                         returnModel.isok = cookies == null ? false : true;

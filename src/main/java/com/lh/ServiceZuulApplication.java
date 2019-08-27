@@ -24,9 +24,9 @@ public class ServiceZuulApplication {
 		//        System.out.println("http://localhost:2000/swagger-ui.html");
 	}
 
-//	@Bean
-//	public AccessTokenFilter accessTokenFilter(){
-//		return new AccessTokenFilter();
-//	}
+	@Bean
+	public AccessTokenFilter accessTokenFilter(){
+		return new AccessTokenFilter();
+	}
 }
 
