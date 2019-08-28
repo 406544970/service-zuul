@@ -8,24 +8,15 @@ import com.lh.myenum.EnumClass;
 import com.lh.service.IpService;
 import com.lh.unit.CheckAccessTokenClass;
 import com.lh.unit.RedisOperator;
+import com.lh.unit.ZuulToolClass;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
-import com.netflix.zuul.http.HttpServletRequestWrapper;
-import com.netflix.zuul.http.ServletInputStreamWrapper;
-import lh.toolclass.LhJsonClass;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StreamUtils;
 
-import javax.servlet.ServletInputStream;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -61,11 +52,9 @@ public class AccessTokenFilter extends ZuulFilter {
 
     private MyWhiteNameList myWhiteNameList;
     private MyBlackNameList myBlackNameList;
-    private MyDomainList myDomainList;
 
     public void iniFilter() {
         myBlackNameList = new MyBlackNameList();
-        myDomainList = new MyDomainList();
         myWhiteNameList = new MyWhiteNameList();
     }
 
@@ -88,7 +77,6 @@ public class AccessTokenFilter extends ZuulFilter {
 
     @Override
     public Object run() {
-        boolean isCheck;
         Logger logger = Logger.getLogger("chapter07");
         ReturnModel returnModel = new ReturnModel();
         returnModel.message = String.format("%s:无合法通行证，不允许访问！", returnModel.message);
@@ -98,23 +86,6 @@ public class AccessTokenFilter extends ZuulFilter {
         HttpServletResponse response = ctx.getResponse();
 
         String useIp = request.getRemoteAddr();
-        String[] whiteList = new String[2];
-        whiteList[0] = "http://localhost:63342";
-        whiteList[1] = "http://www.lh.com";
-        String myOrigin = request.getHeader("origin");
-        logger.info(String.format("Origin:%s", myOrigin));
-        boolean isValid = false;
-        for (String ip : whiteList) {
-            if (myOrigin != null && myOrigin.equals(ip)) {
-                isValid = true;
-                break;
-            }
-        }
-        response.setHeader("Access-Control-Allow-Origin", isValid ? myOrigin : "null");
-        response.setHeader("Access-Control-Allow-Method", "OPTIONS, TRACE, GET, HEAD, POST, PUT");
-        response.setHeader("Access-Control-Allow-Credentials", "true");
-        response.setContentType("application/json;text/html;charset=UTF-8");
-        response.setCharacterEncoding("UTF-8");
 
         if (myBlackNameList.isAllow(useIp)) {
             returnModel.isok = true;
@@ -123,16 +94,13 @@ public class AccessTokenFilter extends ZuulFilter {
             IsCheckWhitePath isCheckWhitePath = new IsCheckWhitePath();
 
             if (isCheckWhitePath.isCheckWhite(getRequestURI)) {
-                isCheck = myWhiteNameList.isAllow(useIp);
-                if (!isCheck) {
-                    returnModel.isok = false;
+                returnModel.isok = myWhiteNameList.isAllow(useIp);
+                if (!returnModel.isok) {
                     returnModel.message = String.format("%s:您的IP(%s)未在白名单中，不允许访问！", returnModel.message, useIp);
                 }
-            } else {
-                isCheck = true;
             }
 
-            if (isCheck) {
+            if (returnModel.isok) {
                 returnModel = new ReturnModel();
                 OperateTypeClass operateTypeClass = new OperateTypeClass();
                 EnumClass.CheckIdentityEnum checkIdentityEnum = operateTypeClass.GetOperateType(getRequestURI);
@@ -156,9 +124,17 @@ public class AccessTokenFilter extends ZuulFilter {
                             }
                         }
                     }
-                    //检查accessToken
                     break;
                     case IS_BS: {
+                        String myOrigin = request.getHeader("origin");
+                        returnModel.isok = ZuulToolClass.getOriginValid(myOrigin);
+                        if (returnModel.isok) {
+                            response.setHeader("Access-Control-Allow-Origin", myOrigin);
+                            response.setHeader("Access-Control-Allow-Method", "OPTIONS, TRACE, GET, HEAD, POST, PUT");
+                            response.setHeader("Access-Control-Allow-Credentials", "true");
+                            response.setContentType("application/json;text/html;charset=UTF-8");
+                            response.setCharacterEncoding("UTF-8");
+                        }
                         Cookie[] cookies = request.getCookies();
                         returnModel.isok = cookies == null ? false : true;
                         if (returnModel.isok) {
@@ -186,21 +162,36 @@ public class AccessTokenFilter extends ZuulFilter {
                                 returnModel.isok = checkAccessTokenClass.isAccessTokenOk(tokenClass);
                                 if (returnModel.isok) {
                                     returnModel.setSuccess();
+                                    request.getParameterMap();
                                     Map<String, List<String>> requestQueryParams = ctx.getRequestQueryParams();
-                                    if (!requestQueryParams.containsKey(UseId)) {
-                                        List<String> list = new ArrayList<>();
-                                        list.add(useId);
-                                        requestQueryParams.put(UseId,list);
+                                    if (requestQueryParams != null) {
+                                        if (!requestQueryParams.containsKey(UseId)) {
+                                            List<String> list = new ArrayList<>();
+                                            list.add(useId);
+                                            requestQueryParams.put(UseId,list);
+                                        }
+                                        if (!requestQueryParams.containsKey(UseType)) {
+                                            List<String> list = new ArrayList<>();
+                                            list.add(useType);
+                                            requestQueryParams.put(UseType,list);
+                                        }
+                                        if (!requestQueryParams.containsKey(ClientType)) {
+                                            List<String> list = new ArrayList<>();
+                                            list.add(clientType);
+                                            requestQueryParams.put(ClientType,list);
+                                        }
                                     }
-                                    if (!requestQueryParams.containsKey(UseType)) {
-                                        List<String> list = new ArrayList<>();
-                                        list.add(useType);
-                                        requestQueryParams.put(UseType,list);
-                                    }
-                                    if (!requestQueryParams.containsKey(ClientType)) {
-                                        List<String> list = new ArrayList<>();
-                                        list.add(clientType);
-                                        requestQueryParams.put(ClientType,list);
+                                    else{
+                                        List<String> listUseId = new ArrayList<>();
+                                        listUseId.add(useId);
+                                        List<String> listUseType = new ArrayList<>();
+                                        listUseType.add(useType);
+                                        List<String> listClientType = new ArrayList<>();
+                                        listClientType.add(clientType);
+
+                                        requestQueryParams.put(UseId,listUseId);
+                                        requestQueryParams.put(UseType,listUseType);
+                                        requestQueryParams.put(ClientType,listClientType);
                                     }
                                     ctx.setRequestQueryParams(requestQueryParams);
                                 }
