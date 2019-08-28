@@ -24,7 +24,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -166,18 +168,14 @@ public class AccessTokenFilter extends ZuulFilter {
                             String clientType = null;
                             for (Cookie row : cookies
                                     ) {
-                                if (row.getName().equals(TokenName)) {
+                                if (row.getName().equals(TokenName))
                                     accessToken = row.getValue();
-                                }
-                                if (row.getName().equals(UseId)) {
+                                if (row.getName().equals(UseId))
                                     useId = row.getValue();
-                                }
-                                if (row.getName().equals(UseType)) {
+                                if (row.getName().equals(UseType))
                                     useType = row.getValue();
-                                }
-                                if (row.getName().equals(ClientType)) {
+                                if (row.getName().equals(ClientType))
                                     clientType = row.getValue();
-                                }
                             }
                             if ((accessToken != null) && (useId != null) && (useType != null) && (clientType != null)) {
                                 TokenClass tokenClass = new TokenClass();
@@ -188,36 +186,23 @@ public class AccessTokenFilter extends ZuulFilter {
                                 returnModel.isok = checkAccessTokenClass.isAccessTokenOk(tokenClass);
                                 if (returnModel.isok) {
                                     returnModel.setSuccess();
-                                    Map<String, String[]> parameterMap = request.getParameterMap();
-                                    logger.info(gson.toJson(parameterMap));
-
-                                    if (!parameterMap.containsKey("useId")) {
-                                        parameterMap.put("useId", new String[]{useId});
+                                    Map<String, List<String>> requestQueryParams = ctx.getRequestQueryParams();
+                                    if (!requestQueryParams.containsKey(UseId)) {
+                                        List<String> list = new ArrayList<>();
+                                        list.add(useId);
+                                        requestQueryParams.put(UseId,list);
                                     }
-                                    if (!parameterMap.containsKey("useType")) {
-                                        parameterMap.put("useType", new String[]{useType});
+                                    if (!requestQueryParams.containsKey(UseType)) {
+                                        List<String> list = new ArrayList<>();
+                                        list.add(useType);
+                                        requestQueryParams.put(UseType,list);
                                     }
-                                    if (!parameterMap.containsKey("clientType")) {
-                                        parameterMap.put("clientType", new String[]{clientType});
+                                    if (!requestQueryParams.containsKey(ClientType)) {
+                                        List<String> list = new ArrayList<>();
+                                        list.add(clientType);
+                                        requestQueryParams.put(ClientType,list);
                                     }
-                                    String newBody = parameterMap.toString();
-                                    final byte[] reqBodyBytes = newBody.getBytes();
-                                    ctx.setRequest(new HttpServletRequestWrapper(request) {
-                                        @Override
-                                        public ServletInputStream getInputStream() throws IOException {
-                                            return new ServletInputStreamWrapper(reqBodyBytes);
-                                        }
-
-                                        @Override
-                                        public int getContentLength() {
-                                            return reqBodyBytes.length;
-                                        }
-
-                                        @Override
-                                        public long getContentLengthLong() {
-                                            return reqBodyBytes.length;
-                                        }
-                                    });
+                                    ctx.setRequestQueryParams(requestQueryParams);
                                 }
                             }
                         }
