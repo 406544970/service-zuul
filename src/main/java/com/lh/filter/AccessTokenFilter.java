@@ -1,5 +1,6 @@
 package com.lh.filter;
 
+import com.google.gson.Gson;
 import com.lh.model.ReturnModel;
 import com.lh.model.TokenClass;
 import com.lh.myclass.*;
@@ -9,11 +10,22 @@ import com.lh.unit.CheckAccessTokenClass;
 import com.lh.unit.RedisOperator;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
+import com.netflix.zuul.http.HttpServletRequestWrapper;
+import com.netflix.zuul.http.ServletInputStreamWrapper;
+import lh.toolclass.LhJsonClass;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StreamUtils;
 
+import javax.servlet.ServletInputStream;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.Charset;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import static org.springframework.cloud.netflix.zuul.filters.support.FilterConstants.FORWARD_TO_KEY;
@@ -26,6 +38,8 @@ import static org.springframework.cloud.netflix.zuul.filters.support.FilterConst
  * @editLog 过滤IP黑名单和白名单，判断是BS还是CS，判断是否需要身份验证
  */
 public class AccessTokenFilter extends ZuulFilter {
+    @Autowired
+    Gson gson;
     @Autowired
     IpService ipService;
     @Autowired
@@ -55,13 +69,9 @@ public class AccessTokenFilter extends ZuulFilter {
 
     @Override
     public boolean shouldFilter() {
-//        return true;
         RequestContext ctx = RequestContext.getCurrentContext();
-        // a filter has already forwarded
-        // a filter has already determined serviceId
         return !ctx.containsKey(FORWARD_TO_KEY)
                 && !ctx.containsKey(SERVICE_ID_KEY);
-
     }
 
     @Override
@@ -86,28 +96,11 @@ public class AccessTokenFilter extends ZuulFilter {
         HttpServletResponse response = ctx.getResponse();
 
         String useIp = request.getRemoteAddr();
-//        Enumeration headerNames = request.getHeaderNames();
-//        while (headerNames.hasMoreElements()) {
-//            String key = (String) headerNames.nextElement();
-//            String value = request.getHeader(key);
-////            logger.info("Head[" + key + "]:" + value);
-//        }
-
-//        List<String> domainList = redisOperator.getDomainList();
-//        if (domainList == null) {
-//            myDomainList.setNameList(ipService.getDomainList());
-//        } else {
-//            if (domainList.isEmpty()) {
-//                myDomainList.setNameList(ipService.getDomainList());
-//            }
-//            else
-//                myDomainList.setNameList(domainList);
-//        }
-//        String[] whiteList = myDomainList.getNameList().toArray(new String[myDomainList.getListCount()]);
         String[] whiteList = new String[2];
         whiteList[0] = "http://localhost:63342";
         whiteList[1] = "http://www.lh.com";
         String myOrigin = request.getHeader("origin");
+        logger.info(String.format("Origin:%s", myOrigin));
         boolean isValid = false;
         for (String ip : whiteList) {
             if (myOrigin != null && myOrigin.equals(ip)) {
@@ -164,8 +157,6 @@ public class AccessTokenFilter extends ZuulFilter {
                     //检查accessToken
                     break;
                     case IS_BS: {
-//                        returnModel.isok = true;
-                        //检查cookie
                         Cookie[] cookies = request.getCookies();
                         returnModel.isok = cookies == null ? false : true;
                         if (returnModel.isok) {
@@ -197,6 +188,36 @@ public class AccessTokenFilter extends ZuulFilter {
                                 returnModel.isok = checkAccessTokenClass.isAccessTokenOk(tokenClass);
                                 if (returnModel.isok) {
                                     returnModel.setSuccess();
+                                    Map<String, String[]> parameterMap = request.getParameterMap();
+                                    logger.info(gson.toJson(parameterMap));
+
+                                    if (!parameterMap.containsKey("useId")) {
+                                        parameterMap.put("useId", new String[]{useId});
+                                    }
+                                    if (!parameterMap.containsKey("useType")) {
+                                        parameterMap.put("useType", new String[]{useType});
+                                    }
+                                    if (!parameterMap.containsKey("clientType")) {
+                                        parameterMap.put("clientType", new String[]{clientType});
+                                    }
+                                    String newBody = parameterMap.toString();
+                                    final byte[] reqBodyBytes = newBody.getBytes();
+                                    ctx.setRequest(new HttpServletRequestWrapper(request) {
+                                        @Override
+                                        public ServletInputStream getInputStream() throws IOException {
+                                            return new ServletInputStreamWrapper(reqBodyBytes);
+                                        }
+
+                                        @Override
+                                        public int getContentLength() {
+                                            return reqBodyBytes.length;
+                                        }
+
+                                        @Override
+                                        public long getContentLengthLong() {
+                                            return reqBodyBytes.length;
+                                        }
+                                    });
                                 }
                             }
                         }
@@ -218,19 +239,6 @@ public class AccessTokenFilter extends ZuulFilter {
         } else {
             returnModel.message = String.format("%s:您的IP(%s)已进入黑名单，不允许访问！", returnModel.message, useIp);
         }
-        String resultBody = "<div class=\"top\">";
-        resultBody += "<form name=\"userLoginActionForm\" id=\"userLoginActionForm\" method=\"POST\" action=\"\" target=\"_parent\">";
-        resultBody += "<input type=\"text\" autofocus=\"true\" id=\"username\" name=\"username\" maxlength=\"20\" placeholder=\"帐号\"";
-        resultBody += "onkeydown=\"UserEnter(event)\" onfocus=\"hideVcode()\"/>";
-        resultBody += "<input type=\"password\" id=\"userpwd\" name=\"userpwd\" maxlength=\"20\" placeholder=\" 密码\" ";
-        resultBody += "onkeydown=\"PassEnter(event)\"/>";
-        resultBody += "<input type=\"text\" id=\"validatecode\"  placeholder=\" 验证码\"";
-        resultBody += "onkeydown=\"ValidateCodeEnter(event)\">";
-        resultBody += "<img id=\"vcodesrc\" onclick=\"updateValidateImage()\" src=\"\"  style=\"display: none\">";
-        resultBody += "<input type=\"button\" value=\"\" id=\"login_bt\" name=\"login_bt\"/>";
-        resultBody += "<a href=\"\" class=\"forget\">忘记密码</a>";
-        resultBody += "</form>";
-        resultBody += "</div>";
 
         if (returnModel.isok) {
 //            if (!useIp.equals("192.168.1.123")) {
@@ -239,6 +247,19 @@ public class AccessTokenFilter extends ZuulFilter {
 //                RibbonFilterContextHolder.getCurrentContext().add("version", "2");
 //            }
         } else {
+            String resultBody = "<div class=\"top\">";
+            resultBody += "<form name=\"userLoginActionForm\" id=\"userLoginActionForm\" method=\"POST\" action=\"\" target=\"_parent\">";
+            resultBody += "<input type=\"text\" autofocus=\"true\" id=\"username\" name=\"username\" maxlength=\"20\" placeholder=\"帐号\"";
+            resultBody += "onkeydown=\"UserEnter(event)\" onfocus=\"hideVcode()\"/>";
+            resultBody += "<input type=\"password\" id=\"userpwd\" name=\"userpwd\" maxlength=\"20\" placeholder=\" 密码\" ";
+            resultBody += "onkeydown=\"PassEnter(event)\"/>";
+            resultBody += "<input type=\"text\" id=\"validatecode\"  placeholder=\" 验证码\"";
+            resultBody += "onkeydown=\"ValidateCodeEnter(event)\">";
+            resultBody += "<img id=\"vcodesrc\" onclick=\"updateValidateImage()\" src=\"\"  style=\"display: none\">";
+            resultBody += "<input type=\"button\" value=\"\" id=\"login_bt\" name=\"login_bt\"/>";
+            resultBody += "<a href=\"\" class=\"forget\">忘记密码</a>";
+            resultBody += "</form>";
+            resultBody += "</div>";
             ctx.setSendZuulResponse(false);
             ctx.setResponseStatusCode(nStatusCode);
             ctx.getResponse().setContentType("text/html;charset=UTF-8");
