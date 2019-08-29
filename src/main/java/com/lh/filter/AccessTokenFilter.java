@@ -134,10 +134,8 @@ public class AccessTokenFilter extends ZuulFilter {
                             response.setHeader("Access-Control-Allow-Credentials", "true");
                             response.setContentType("application/json;text/html;charset=UTF-8");
                             response.setCharacterEncoding("UTF-8");
-                        }
-                        Cookie[] cookies = request.getCookies();
-                        returnModel.isok = cookies == null ? false : true;
-                        if (returnModel.isok) {
+                            Cookie[] cookies = request.getCookies();
+                            returnModel.isok = cookies == null ? false : true;
                             String useId = null;
                             String accessToken = null;
                             String useType = null;
