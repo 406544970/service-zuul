@@ -166,20 +166,19 @@ public class AccessTokenFilter extends ZuulFilter {
                                         if (!requestQueryParams.containsKey(UseId)) {
                                             List<String> list = new ArrayList<>();
                                             list.add(useId);
-                                            requestQueryParams.put(UseId,list);
+                                            requestQueryParams.put(UseId, list);
                                         }
                                         if (!requestQueryParams.containsKey(UseType)) {
                                             List<String> list = new ArrayList<>();
                                             list.add(useType);
-                                            requestQueryParams.put(UseType,list);
+                                            requestQueryParams.put(UseType, list);
                                         }
                                         if (!requestQueryParams.containsKey(ClientType)) {
                                             List<String> list = new ArrayList<>();
                                             list.add(clientType);
-                                            requestQueryParams.put(ClientType,list);
+                                            requestQueryParams.put(ClientType, list);
                                         }
-                                    }
-                                    else{
+                                    } else {
                                         List<String> listUseId = new ArrayList<>();
                                         listUseId.add(useId);
                                         List<String> listUseType = new ArrayList<>();
@@ -187,9 +186,9 @@ public class AccessTokenFilter extends ZuulFilter {
                                         List<String> listClientType = new ArrayList<>();
                                         listClientType.add(clientType);
 
-                                        requestQueryParams.put(UseId,listUseId);
-                                        requestQueryParams.put(UseType,listUseType);
-                                        requestQueryParams.put(ClientType,listClientType);
+                                        requestQueryParams.put(UseId, listUseId);
+                                        requestQueryParams.put(UseType, listUseType);
+                                        requestQueryParams.put(ClientType, listClientType);
                                     }
                                     ctx.setRequestQueryParams(requestQueryParams);
                                 }
@@ -203,9 +202,18 @@ public class AccessTokenFilter extends ZuulFilter {
                         break;
                     case IS_LOCALREMOTE:
                         break;
-                    case IS_NO:
-                        returnModel.isok = true;
-                        break;
+                    case IS_NO: {
+                        String myOrigin = request.getHeader("origin");
+                        returnModel.isok = ZuulToolClass.getOriginValid(myOrigin);
+                        if (returnModel.isok) {
+                            response.setHeader("Access-Control-Allow-Origin", myOrigin);
+                            response.setHeader("Access-Control-Allow-Method", "OPTIONS, TRACE, GET, HEAD, POST, PUT");
+                            response.setHeader("Access-Control-Allow-Credentials", "true");
+                            response.setContentType("application/json;text/html;charset=UTF-8");
+                            response.setCharacterEncoding("UTF-8");
+                        }
+                    }
+                    break;
                     default:
                         break;
                 }
