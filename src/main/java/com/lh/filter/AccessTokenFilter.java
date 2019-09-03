@@ -126,32 +126,29 @@ public class AccessTokenFilter extends ZuulFilter {
                     }
                     break;
                     case IS_BS: {
-                        String myOrigin = request.getHeader("origin");
-                        returnModel.isok = ZuulToolClass.getOriginValid(myOrigin);
+                        Cookie[] cookies = request.getCookies();
+                        returnModel.isok = cookies == null ? false : true;
                         if (returnModel.isok) {
-                            response.setHeader("Access-Control-Allow-Origin", myOrigin);
-                            response.setHeader("Access-Control-Allow-Method", "OPTIONS, TRACE, GET, HEAD, POST, PUT");
-                            response.setHeader("Access-Control-Allow-Credentials", "true");
-                            response.setContentType("application/json;text/html;charset=UTF-8");
-                            response.setCharacterEncoding("UTF-8");
-                            Cookie[] cookies = request.getCookies();
-                            returnModel.isok = cookies == null ? false : true;
                             String useId = null;
                             String accessToken = null;
                             String useType = null;
                             String clientType = null;
                             for (Cookie row : cookies
                                     ) {
-                                if (row.getName().equals(TokenName))
+                                if (row.getName().equals(TokenName)) {
                                     accessToken = row.getValue();
-                                if (row.getName().equals(UseId))
+                                }
+                                if (row.getName().equals(UseId)) {
                                     useId = row.getValue();
-                                if (row.getName().equals(UseType))
+                                }
+                                if (row.getName().equals(UseType)) {
                                     useType = row.getValue();
-                                if (row.getName().equals(ClientType))
+                                }
+                                if (row.getName().equals(ClientType)) {
                                     clientType = row.getValue();
+                                }
                             }
-                            if ((accessToken != null) && (useId != null) && (useType != null) && (clientType != null)) {
+                            if (returnModel.isok && accessToken != null && useId != null && useType != null && clientType != null) {
                                 TokenClass tokenClass = new TokenClass();
                                 tokenClass.setUseId(useId);
                                 tokenClass.setAccessToken(accessToken);
@@ -185,7 +182,6 @@ public class AccessTokenFilter extends ZuulFilter {
                                         listUseType.add(useType);
                                         List<String> listClientType = new ArrayList<>();
                                         listClientType.add(clientType);
-
                                         requestQueryParams.put(UseId, listUseId);
                                         requestQueryParams.put(UseType, listUseType);
                                         requestQueryParams.put(ClientType, listClientType);
@@ -194,16 +190,13 @@ public class AccessTokenFilter extends ZuulFilter {
                                 }
                             }
                         }
+                        if (!returnModel.isok) {
+                            break;
+                        }
                     }
-                    break;
-                    case IS_WEIXIN_PUBLIC:
-                        break;
-                    case IS_WEIXIN_SMALLPROGRAME:
-                        break;
-                    case IS_LOCALREMOTE:
-                        break;
                     case IS_NO: {
                         String myOrigin = request.getHeader("origin");
+                        logger.info("NO:" + myOrigin);
                         returnModel.isok = ZuulToolClass.getOriginValid(myOrigin);
                         if (returnModel.isok) {
                             response.setHeader("Access-Control-Allow-Origin", myOrigin);
@@ -214,6 +207,12 @@ public class AccessTokenFilter extends ZuulFilter {
                         }
                     }
                     break;
+                    case IS_WEIXIN_PUBLIC:
+                        break;
+                    case IS_WEIXIN_SMALLPROGRAME:
+                        break;
+                    case IS_LOCALREMOTE:
+                        break;
                     default:
                         break;
                 }
@@ -224,10 +223,10 @@ public class AccessTokenFilter extends ZuulFilter {
 
         if (returnModel.isok) {
 //            if (!useIp.equals("192.168.1.123")) {
-//                RibbonFilterContextHolder.getCurrentContext().add("version", "1");
-//            } else {
-//                RibbonFilterContextHolder.getCurrentContext().add("version", "2");
-//            }
+////                RibbonFilterContextHolder.getCurrentContext().add("version", "1");
+////            } else {
+////                RibbonFilterContextHolder.getCurrentContext().add("version", "2");
+////            }
         } else {
             String resultBody = "<div class=\"top\">";
             resultBody += "<form name=\"userLoginActionForm\" id=\"userLoginActionForm\" method=\"POST\" action=\"\" target=\"_parent\">";
