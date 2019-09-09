@@ -34,7 +34,6 @@ public class ZuulToolClass {
         list.add("localhost");
         list.add("www.lh.com");
         list.add("cp.lh.com");
-        list.add("cp.lh.com");
         list.add("cj.lh.com");
         list.add("wmj.lh.com");
         list.add("lj.lh.com");
