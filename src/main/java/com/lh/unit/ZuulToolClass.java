@@ -27,6 +27,7 @@ public class ZuulToolClass {
         list.add("http://cp.lh.com");
         list.add("http://cj.lh.com");
         list.add("http://wmj.lh.com");
+        list.add("http://lj.lh.com");
 
         int i = list.indexOf(myOrigin);
         boolean isValid = i > -1 ? true : false;
