@@ -17,6 +17,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -108,25 +109,29 @@ public class AccessTokenFilter extends ZuulFilter {
                     case IS_CS:
                     case IS_ANDROID:
                     case IS_IOS: {
-                        Object accessToken = request.getParameter(TokenName);
-                        Object useId = request.getParameter(UseId);
-                        Object useType = request.getParameter(UseType);
-                        Object clientType = request.getParameter(ClientType);
-                        if ((accessToken != null) && (useId != null) && (useType != null)) {
-                            TokenClass tokenClass = new TokenClass();
-                            tokenClass.setUseId(useId.toString());
-                            tokenClass.setAccessToken(accessToken.toString());
-                            tokenClass.setUseType(useType.toString());
-                            tokenClass.setClientType(clientType.toString());
-                            returnModel.isok = checkAccessTokenClass.isAccessTokenOk(tokenClass);
-                            if (returnModel.isok) {
-                                returnModel.setSuccess();
-                            }
-                        }
+                        returnModel.isok = true;
+//                        Object accessToken = request.getParameter(TokenName);
+//                        Object useId = request.getParameter(UseId);
+//                        Object useType = request.getParameter(UseType);
+//                        Object clientType = request.getParameter(ClientType);
+//                        if ((accessToken != null) && (useId != null) && (useType != null)) {
+//                            TokenClass tokenClass = new TokenClass();
+//                            tokenClass.setUseId(useId.toString());
+//                            tokenClass.setAccessToken(accessToken.toString());
+//                            tokenClass.setUseType(useType.toString());
+//                            tokenClass.setClientType(clientType.toString());
+//                            returnModel.isok = checkAccessTokenClass.isAccessTokenOk(tokenClass);
+//                            if (returnModel.isok) {
+//                                returnModel.setSuccess();
+//                            }
+//                        }
                     }
                     break;
                     case IS_BS: {
                         Cookie[] cookies = request.getCookies();
+                        if (cookies != null) {
+                            logger.info("cookies:" + cookies.length);
+                        }
                         returnModel.isok = cookies == null ? false : true;
                         if (returnModel.isok) {
                             String useId = null;
@@ -176,6 +181,7 @@ public class AccessTokenFilter extends ZuulFilter {
                                             requestQueryParams.put(ClientType, list);
                                         }
                                     } else {
+                                        requestQueryParams = new HashMap<String, List<String>>();
                                         List<String> listUseId = new ArrayList<>();
                                         listUseId.add(useId);
                                         List<String> listUseType = new ArrayList<>();
@@ -185,6 +191,7 @@ public class AccessTokenFilter extends ZuulFilter {
                                         requestQueryParams.put(UseId, listUseId);
                                         requestQueryParams.put(UseType, listUseType);
                                         requestQueryParams.put(ClientType, listClientType);
+
                                     }
                                     ctx.setRequestQueryParams(requestQueryParams);
                                 }
@@ -197,6 +204,7 @@ public class AccessTokenFilter extends ZuulFilter {
                     case IS_NO: {
                         String myOrigin = request.getHeader("origin");
                         logger.info("NO:" + myOrigin);
+
                         returnModel.isok = ZuulToolClass.getOriginValid(myOrigin);
                         if (returnModel.isok) {
                             response.setHeader("Access-Control-Allow-Origin", myOrigin);
