@@ -181,7 +181,7 @@ public class AccessTokenFilter extends ZuulFilter {
                                             requestQueryParams.put(ClientType, list);
                                         }
                                     } else {
-                                        requestQueryParams = new HashMap<String, List<String>>();
+                                        requestQueryParams = new HashMap<>();
                                         List<String> listUseId = new ArrayList<>();
                                         listUseId.add(useId);
                                         List<String> listUseType = new ArrayList<>();
