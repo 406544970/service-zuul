@@ -1,4 +1,4 @@
-package com.lh.apicontrol;
+package com.lh.control;
 
 import com.lh.service.IpService;
 import com.lh.unit.RedisOperator;

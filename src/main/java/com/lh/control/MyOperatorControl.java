@@ -1,4 +1,4 @@
-package com.lh.apicontrol;
+package com.lh.control;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
