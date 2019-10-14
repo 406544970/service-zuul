@@ -13,8 +13,8 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class CheckAccessTokenClass {
-    @Autowired
-    RedisOperator redisOperator;
+//    @Autowired
+//    RedisOperator redisOperator;
 
     public CheckAccessTokenClass() {
         super();
@@ -43,12 +43,13 @@ public class CheckAccessTokenClass {
      * @return
      */
     private boolean checkUseToken(String clientType, String useId, String useType, String token) {
-        String keyName = String.format("%s%s:%s", clientType, useType, useId);
-        String accessToken = redisOperator.getString(keyName);
-        if (accessToken != null) {
-            return token.equals(accessToken);
-        } else
-            return false;
+//        String keyName = String.format("%s%s:%s", clientType, useType, useId);
+//        String accessToken = redisOperator.getString(keyName);
+//        if (accessToken != null) {
+//            return token.equals(accessToken);
+//        } else
+//            return false;
+        return true;
     }
 
 }
