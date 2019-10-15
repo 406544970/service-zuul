@@ -60,6 +60,9 @@ public class OperateTypeClass {
             case 6:
                 checkIdentityEnum = EnumClass.CheckIdentityEnum.IS_LOCALREMOTE;
                 break;
+            case 7:
+                checkIdentityEnum = EnumClass.CheckIdentityEnum.IS_OTHER;
+                break;
             default:
                 checkIdentityEnum = EnumClass.CheckIdentityEnum.IS_NO;
                 break;

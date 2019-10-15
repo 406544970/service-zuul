@@ -11,7 +11,7 @@
             AND useType = #{useType,jdbcType=VARCHAR}
             AND clientType = #{clientType,jdbcType=VARCHAR}
             AND accessToken = #{accessToken,jdbcType=VARCHAR}
-            <![CDATA[AND tokenEffective < now()]]>
+            AND tokenEffective > now()
         </where>
     </select>
 

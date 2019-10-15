@@ -15,8 +15,8 @@ public class EnumClass {
         IS_WEIXIN_PUBLIC("-wkf-"),//微信公众号
         IS_WEIXIN_SMALLPROGRAME("-skf-"),//微信小程序
         IS_LOCALREMOTE("-lkf-"),//本地跳转
-        IS_NO("-nkf-"),//只验证Origin
-        IS_OTHER("-okf-");//不验证任何东西
+        IS_OTHER("-okf-"),//不验证任何东西
+        IS_NO("-nkf-");//只验证Origin
         private String text;
         CheckIdentityEnum(String _context) {
             this.text = _context;
