@@ -1,7 +1,6 @@
 package com.lh.dao;
 
 import com.lh.model.InPutParam.MyTokenSelectInParam;
-import com.lh.model.MyTokenModel;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -18,7 +17,7 @@ public interface MyTokenMapper {
      * @param myTokenSelectInParam 输入参数
      * @return Token时间
      */
-    MyTokenModel selectToken(MyTokenSelectInParam myTokenSelectInParam);
+    String selectToken(MyTokenSelectInParam myTokenSelectInParam);
     /**
      * 增加Token
      *
@@ -54,5 +53,4 @@ public interface MyTokenMapper {
      * @return 影响条数
      */
     int deleteHistoryToken();
-
 }

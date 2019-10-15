@@ -16,7 +16,7 @@ public interface MyTokenService {
      * @param myTokenSelectInParam 得到Token
      * @return Token时间
      */
-    MyTokenModel selectToken(MyTokenSelectInParam myTokenSelectInParam);
+    String selectToken(MyTokenSelectInParam myTokenSelectInParam);
     /**
      * 增加Token
      *

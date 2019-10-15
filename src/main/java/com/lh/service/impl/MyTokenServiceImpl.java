@@ -25,7 +25,7 @@ public class MyTokenServiceImpl implements MyTokenService {
      * @return Token时间
      */
     @Override
-    public MyTokenModel selectToken(MyTokenSelectInParam myTokenSelectInParam) {
+    public String selectToken(MyTokenSelectInParam myTokenSelectInParam) {
         return myTokenMapper.selectToken(myTokenSelectInParam);
     }
 

@@ -2,17 +2,19 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.lh.dao.MyTokenMapper">
     <!-- 注释：得到Token -->
-    <select id="selectToken" resultType="com.lh.model.MyTokenModel" parameterType="com.lh.model.InPutParam.MyTokenSelectInParam">
+    <select id="selectToken" resultType="java.lang.String" parameterType="com.lh.model.InPutParam.MyTokenSelectInParam">
         SELECT
         accessToken
-        ,tokenEffective
         FROM  inf_accessToken
         <where>
             AND useId = #{useId,jdbcType=VARCHAR}
             AND useType = #{useType,jdbcType=VARCHAR}
             AND clientType = #{clientType,jdbcType=VARCHAR}
+            AND accessToken = #{accessToken,jdbcType=VARCHAR}
+            <![CDATA[AND tokenEffective < now()]]>
         </where>
     </select>
+
     <!-- 注释：增加Token -->
     <insert id="insertToken" parameterType="com.lh.model.InPutParam.MyTokenSelectInParam">
         INSERT INTO inf_accessToken (

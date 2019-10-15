@@ -111,21 +111,21 @@ public class AccessTokenFilter extends ZuulFilter {
                     case IS_ANDROID:
                     case IS_IOS: {
                         returnModel.isok = true;
-//                        Object accessToken = request.getParameter(TokenName);
-//                        Object useId = request.getParameter(UseId);
-//                        Object useType = request.getParameter(UseType);
-//                        Object clientType = request.getParameter(ClientType);
-//                        if ((accessToken != null) && (useId != null) && (useType != null)) {
-//                            TokenClass tokenClass = new TokenClass();
-//                            tokenClass.setUseId(useId.toString());
-//                            tokenClass.setAccessToken(accessToken.toString());
-//                            tokenClass.setUseType(useType.toString());
-//                            tokenClass.setClientType(clientType.toString());
-//                            returnModel.isok = checkAccessTokenClass.isAccessTokenOk(tokenClass);
-//                            if (returnModel.isok) {
-//                                returnModel.setSuccess();
-//                            }
-//                        }
+                        Object accessToken = request.getParameter(TokenName);
+                        Object useId = request.getParameter(UseId);
+                        Object useType = request.getParameter(UseType);
+                        Object clientType = request.getParameter(ClientType);
+                        if ((accessToken != null) && (useId != null) && (useType != null)) {
+                            TokenClass tokenClass = new TokenClass();
+                            tokenClass.setUseId(useId.toString());
+                            tokenClass.setAccessToken(accessToken.toString());
+                            tokenClass.setUseType(useType.toString());
+                            tokenClass.setClientType(clientType.toString());
+                            returnModel.isok = checkAccessTokenClass.isAccessTokenOk(tokenClass);
+                            if (returnModel.isok) {
+                                returnModel.setSuccess();
+                            }
+                        }
                     }
                     break;
                     case IS_BS: {
