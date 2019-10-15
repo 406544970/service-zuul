@@ -50,6 +50,8 @@ public class AccessTokenFilter extends ZuulFilter {
     private final String UseId = "useId";
     private final String UseType = "useType";
     private final String ClientType = "clientType";
+    private final int nStatusCode = 401;
+
 
     private MyWhiteNameList myWhiteNameList;
     private MyBlackNameList myBlackNameList;
@@ -81,7 +83,6 @@ public class AccessTokenFilter extends ZuulFilter {
         Logger logger = Logger.getLogger("chapter07");
         ReturnModel returnModel = new ReturnModel();
         returnModel.message = String.format("%s:无合法通行证，不允许访问！", returnModel.message);
-        int nStatusCode = 401;
         RequestContext ctx = RequestContext.getCurrentContext();
         HttpServletRequest request = ctx.getRequest();
         HttpServletResponse response = ctx.getResponse();
@@ -191,7 +192,6 @@ public class AccessTokenFilter extends ZuulFilter {
                                         requestQueryParams.put(UseId, listUseId);
                                         requestQueryParams.put(UseType, listUseType);
                                         requestQueryParams.put(ClientType, listClientType);
-
                                     }
                                     ctx.setRequestQueryParams(requestQueryParams);
                                 }
