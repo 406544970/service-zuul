@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lh.dao.MyTokenMapper">
+    <!-- 注释：得到Token -->
+    <select id="selectToken" resultType="com.lh.model.MyTokenModel" parameterType="com.lh.model.InPutParam.MyTokenSelectInParam">
+        SELECT
+        accessToken
+        ,tokenEffective
+        FROM  inf_accessToken
+        <where>
+            AND useId = #{useId,jdbcType=VARCHAR}
+            AND useType = #{useType,jdbcType=VARCHAR}
+            AND clientType = #{clientType,jdbcType=VARCHAR}
+        </where>
+    </select>
+    <!-- 注释：增加Token -->
+    <insert id="insertToken" parameterType="com.lh.model.InPutParam.MyTokenSelectInParam">
+        INSERT INTO inf_accessToken (
+        useId
+        ,useType
+        ,clientType
+        ,accessToken
+        <if test="tokenEffective != null">
+            ,tokenEffective
+        </if>
+        )
+        VALUES (
+        #{useId,jdbcType=VARCHAR}
+        ,#{useType,jdbcType=VARCHAR}
+        ,#{clientType,jdbcType=VARCHAR}
+        ,#{accessToken,jdbcType=VARCHAR}
+        <if test="tokenEffective != null">
+            ,#{tokenEffective,jdbcType=TIMESTAMP}
+        </if>
+        )
+    </insert>
+
+    <!-- 注释：重复检查功能,增加Token -->
+    <select id="insertTokenBeforeCheck" resultType="java.lang.Integer" parameterType="com.lh.model.InPutParam.MyTokenSelectInParam">
+        SELECT COUNT(*) AS COUNTER
+        FROM inf_accessToken
+        <where>
+            AND useId = #{useId,jdbcType=VARCHAR}
+            AND useType = #{useType,jdbcType=VARCHAR}
+            AND clientType = #{clientType,jdbcType=VARCHAR}
+        </where>
+    </select>
+    <!-- 注释：更新Token -->
+    <update id="updateToken" parameterType="com.lh.model.InPutParam.MyTokenSelectInParam">
+        UPDATE inf_accessToken
+        <set>
+                tokenEffective = #{tokenEffective,jdbcType=TIMESTAMP},
+        </set>
+        <where>
+                AND useId = #{useIdWhere,jdbcType=VARCHAR}
+                AND useType = #{useTypeWhere,jdbcType=VARCHAR}
+                AND clientType = #{clientTypeWhere,jdbcType=VARCHAR}
+        </where>
+    </update>
+    <!-- 注释：删除Token -->
+    <delete id="deleteToken" parameterType="com.lh.model.InPutParam.MyTokenSelectInParam">
+        DELETE FROM inf_accessToken
+        <where>
+            <if test="useId != null">
+                AND useId = #{useId,jdbcType=VARCHAR}
+            </if>
+            <if test="useType != null">
+                AND useType = #{useType,jdbcType=VARCHAR}
+            </if>
+            <if test="clientType != null">
+                AND clientType = #{clientType,jdbcType=VARCHAR}
+            </if>
+            <if test="accessToken != null">
+                AND accessToken = #{accessToken,jdbcType=VARCHAR}
+            </if>
+            <if test="tokenEffective != null">
+                AND tokenEffective = #{tokenEffective,jdbcType=TIMESTAMP}
+            </if>
+        </where>
+    </delete>
+    <!-- 注释：删除历史Token -->
+    <delete id="deleteHistoryToken" parameterType="com.lh.model.InPutParam.MyTokenSelectInParam">
+        DELETE FROM inf_accessToken
+        <where>
+            <![CDATA[AND tokenEffective < now()]]>
+        </where>
+    </delete>
+
+</mapper>

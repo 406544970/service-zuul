@@ -8,8 +8,6 @@ package com.lh.myenum;
  */
 public class EnumClass {
     public enum CheckIdentityEnum {
-        /**
-         * BS客户端*/
         IS_BS("-bkf-"),//BS
         IS_CS("-ckf-"),//CS
         IS_ANDROID("-akf-"),//Android
@@ -17,10 +15,9 @@ public class EnumClass {
         IS_WEIXIN_PUBLIC("-wkf-"),//微信公众号
         IS_WEIXIN_SMALLPROGRAME("-skf-"),//微信小程序
         IS_LOCALREMOTE("-lkf-"),//本地跳转
-        IS_NO("-nkf-");//不验证
-
+        IS_NO("-nkf-"),//只验证Origin
+        IS_OTHER("-okf-");//不验证任何东西
         private String text;
-
         CheckIdentityEnum(String _context) {
             this.text = _context;
         }

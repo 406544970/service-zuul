@@ -216,12 +216,13 @@ public class AccessTokenFilter extends ZuulFilter {
                     }
                     break;
                     case IS_WEIXIN_PUBLIC:
-                        break;
                     case IS_WEIXIN_SMALLPROGRAME:
-                        break;
                     case IS_LOCALREMOTE:
+                    case IS_OTHER:
+                        returnModel.isok = true;
                         break;
                     default:
+                        returnModel.isok = true;
                         break;
                 }
             }
