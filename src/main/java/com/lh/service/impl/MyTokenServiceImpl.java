@@ -2,7 +2,6 @@ package com.lh.service.impl;
 
 import com.lh.dao.MyTokenMapper;
 import com.lh.model.InPutParam.MyTokenSelectInParam;
-import com.lh.model.MyTokenModel;
 import com.lh.service.MyTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
