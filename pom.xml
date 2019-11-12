@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.lh</groupId>
-	<artifactId>service-zuul</artifactId>
+	<artifactId>service-zuul-mybatis</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
