@@ -38,6 +38,7 @@ public class ZuulToolClass {
         list.add("wmj.lh.com");
         list.add("lj.lh.com");
         list.add("wzc.lh.com");
+        list.add("lh.lh.com");
 
         int i = list.indexOf(nowOrigin);
         list.clear();
