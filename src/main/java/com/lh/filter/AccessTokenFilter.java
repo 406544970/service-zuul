@@ -38,7 +38,7 @@ public class AccessTokenFilter extends ZuulFilter {
     IpService ipService;
     @Autowired
     CheckAccessTokenClass checkAccessTokenClass;
-//    @Autowired
+//    @Autowired//
 //    RedisOperator redisOperator;
 
     public AccessTokenFilter() {
