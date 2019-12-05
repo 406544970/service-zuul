@@ -54,16 +54,17 @@ public class CheckAccessTokenClass {
 //            return nowAccessToken.equals(accessToken);
 //        } else
 //            return false;
-        MyTokenSelectInParam myTokenSelectInParam = new MyTokenSelectInParam();
-        myTokenSelectInParam.setUseId(useId);
-        myTokenSelectInParam.setUseType(useType);
-        myTokenSelectInParam.setClientType(clientType);
-        myTokenSelectInParam.setAccessToken(accessToken);
-        String selectToken = myTokenService.selectToken(myTokenSelectInParam);
-        if (selectToken == null)
-            return false;
-        else
-            return true;
+//        MyTokenSelectInParam myTokenSelectInParam = new MyTokenSelectInParam();
+//        myTokenSelectInParam.setUseId(useId);
+//        myTokenSelectInParam.setUseType(useType);
+//        myTokenSelectInParam.setClientType(clientType);
+//        myTokenSelectInParam.setAccessToken(accessToken);
+//        String selectToken = myTokenService.selectToken(myTokenSelectInParam);
+//        if (selectToken == null)
+//            return false;
+//        else
+//            return true;
+        return true;
     }
 
 }
